@@ -116,6 +116,8 @@
   display: flex;
   align-items: center;
   gap: var(--oc-space-xs);
+  width: min(100%, 520px);
+  margin: 0 auto;
   height: 4rem;
   padding: 0 var(--oc-space-base);
 }
@@ -162,7 +164,8 @@
 .oc-content {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: min(100%, 520px);
+  margin: 0 auto;
   padding: 0 var(--oc-space-base) var(--oc-space-lg);
   user-select: none;
   -webkit-user-select: none;
