@@ -116,7 +116,7 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
           <section className="profile-hero-card">
             <div className="profile-status-row"><span className="profile-status-chip"><span /> Online</span></div>
             <div className="profile-avatar-wrap"><div className="profile-avatar">👩‍💼</div><span className="profile-avatar-online"><span /></span></div>
-            <h1>Tobi Eniola</h1>
+            <h1>Sarah Eniola</h1>
             <p className="profile-role"><span>Sales Representative</span><i>•</i><strong>Bonny HQ</strong></p>
             <div className="profile-shift-pill"><ShieldCheck size={15} /> Active shift</div>
           </section>
