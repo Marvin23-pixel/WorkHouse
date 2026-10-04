@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { LoaderCircle } from "lucide-react";
 import Login from "./Pages/Login";
 import InputEmail from "./PasswordReset/InputEmail";
 import OtpCode from "./PasswordReset/OtpCode";
@@ -19,7 +18,6 @@ import { logStaffOut } from "./utils/staffStore.js";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentStaff, setCurrentStaff] = useState(null);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentPage, setCurrentPage] = useState("home");
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
@@ -42,44 +40,19 @@ function App() {
     setAuthScreen("login");
   };
 
+  // The "Logging out..." state is now shown inside the Profile popup,
+  // so by the time this runs we can go straight back to Login.
   const handleLogout = () => {
-    setIsLoggingOut(true);
-
     // Mark the staff member offline in the shared directory
     if (currentStaff?.id) {
       logStaffOut(currentStaff.id);
     }
 
-    // Brief loading state before returning to Login
-    window.setTimeout(() => {
-      setIsAuthenticated(false);
-      setCurrentStaff(null);
-      setCurrentPage("home");
-      setAuthScreen("login");
-      setIsLoggingOut(false);
-    }, 1000);
+    setIsAuthenticated(false);
+    setCurrentStaff(null);
+    setCurrentPage("home");
+    setAuthScreen("login");
   };
-
-  // Show a loading screen while logging out
-  if (isLoggingOut) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          gap: 12,
-          background: " #090f22ed",
-          color: "#E7ECF3",
-        }}
-      >
-        <LoaderCircle className="spin" size={32} />
-        <p style={{ margin: 0, fontSize: 15 }}>Logging out...</p>
-      </div>
-    );
-  }
 
   // Before sign-in: Login, or the Forgot Password email screen.
   if (!isAuthenticated) {
