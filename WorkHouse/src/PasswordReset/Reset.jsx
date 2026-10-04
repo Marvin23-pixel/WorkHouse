@@ -172,7 +172,7 @@ export default function Reset({ step = 3, onSubmit, onDone, onBack, onCancel }) 
             </div>
             <h2 className="rs-hero__title">Create New Password</h2>
             <p className="rs-hero__text">
-              Identity verified. Create a robust, compliant credential for your Digisol staff
+              Identity verified. Create a robust, compliant credential for your staff
               account.
             </p>
           </div>
@@ -374,7 +374,7 @@ export default function Reset({ step = 3, onSubmit, onDone, onBack, onCancel }) 
           {/* Footer */}
           <div className="rs-footer">
             <Lock size={15} aria-hidden="true" />
-            <span>256-bit TLS Encrypted Session • DIGISOL Knox Security</span>
+            <span>256-bit TLS Encrypted Session • WorkHouse Knox Security</span>
           </div>
         </div>
       </main>
