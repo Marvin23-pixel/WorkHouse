@@ -6,7 +6,6 @@ import {
   Copy,
   House,
   History,
-  LoaderCircle,
   LockKeyhole,
   LogOut,
   Monitor,
@@ -201,11 +200,7 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
               className={`logout-dialog-icon${isLoggingOut ? " is-loading" : ""}`}
               aria-hidden="true"
             >
-              {isLoggingOut ? (
-                <LoaderCircle className="logout-spin" size={26} />
-              ) : (
-                <LogOut size={26} />
-              )}
+              <LogOut size={26} />
             </div>
             <h2 id="logout-dialog-title">
               {isLoggingOut ? "Logging out..." : "Log out?"}

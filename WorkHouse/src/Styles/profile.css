@@ -338,3 +338,41 @@
     to { opacity: 1; transform: scale(1) translateY(0); }
   }
 }
+
+/* =========================================================
+   LOGGING OUT STATE (animated red circle)
+========================================================= */
+
+.logout-dialog-icon.is-loading {
+  position: relative;
+}
+
+.logout-dialog-icon.is-loading + h2 + p {
+  margin-bottom: 4px;
+}
+
+/* Spinning red ring around the circle */
+.logout-dialog-icon.is-loading::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--profile-danger);
+  border-right-color: rgba(221, 51, 51, 0.35);
+  animation: logout-ring 0.9s linear infinite;
+}
+
+/* Icon slides to show it's leaving */
+.logout-dialog-icon.is-loading svg {
+  animation: logout-nudge 1s ease-in-out infinite;
+}
+
+@keyframes logout-ring {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes logout-nudge {
+  0%, 100% { transform: translateX(-2px); }
+  50% { transform: translateX(4px); }
+}
