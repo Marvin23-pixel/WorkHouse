@@ -348,6 +348,7 @@
   line-height: 18px;
   font-weight: 600;
   letter-spacing: 0.01em;
+  text-align: left;
 }
 
 .rs-field__label--solo {
@@ -451,6 +452,15 @@
 
 .rs-input__status--error {
   color: var(--rs-error);
+}
+
+/* Confirm field: leave room for the status icon next to the eye */
+.rs-input__control--confirm {
+  padding-right: 4.75rem;
+}
+
+.rs-input__status--confirm {
+  right: 3rem;
 }
 
 /* ---------- Strength meter ---------- */

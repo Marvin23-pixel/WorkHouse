@@ -48,6 +48,7 @@ export default function Reset({ step = 3, onSubmit, onDone, onBack, onCancel }) 
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'saving' | 'success'
 
@@ -274,8 +275,8 @@ export default function Reset({ step = 3, onSubmit, onDone, onBack, onCancel }) 
                 <input
                   ref={confirmRef}
                   id={confirmId}
-                  className="rs-input__control"
-                  type="password"
+                  className="rs-input__control rs-input__control--confirm"
+                  type={showConfirm ? 'text' : 'password'}
                   autoComplete="new-password"
                   placeholder="Re-enter password"
                   value={confirm}
@@ -285,15 +286,34 @@ export default function Reset({ step = 3, onSubmit, onDone, onBack, onCancel }) 
                   aria-invalid={mismatch ? 'true' : 'false'}
                 />
                 {matches && (
-                  <span className="rs-input__status rs-input__status--ok" aria-hidden="true">
+                  <span
+                    className="rs-input__status rs-input__status--confirm rs-input__status--ok"
+                    aria-hidden="true"
+                  >
                     <CheckCircle size={20} />
                   </span>
                 )}
                 {mismatch && (
-                  <span className="rs-input__status rs-input__status--error" aria-hidden="true">
+                  <span
+                    className="rs-input__status rs-input__status--confirm rs-input__status--error"
+                    aria-hidden="true"
+                  >
                     <AlertCircle size={20} />
                   </span>
                 )}
+                <button
+                  type="button"
+                  className="rs-input__toggle"
+                  aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                  aria-pressed={showConfirm}
+                  onClick={() => setShowConfirm((value) => !value)}
+                >
+                  {showConfirm ? (
+                    <EyeOff size={20} aria-hidden="true" />
+                  ) : (
+                    <Eye size={20} aria-hidden="true" />
+                  )}
+                </button>
               </div>
               {mismatch && <p className="rs-field__error">Passwords don't match.</p>}
             </div>
