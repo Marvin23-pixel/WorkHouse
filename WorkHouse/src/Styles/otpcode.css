@@ -1,0 +1,602 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Plus+Jakarta+Sans:wght@100..800&display=swap');
+
+/* ---------- Tokens ---------- */
+.oc-screen {
+  --oc-surface: #faf8ff;
+  --oc-surface-lowest: #ffffff;
+  --oc-surface-low: #f2f3ff;
+  --oc-surface-high: #e2e7ff;
+
+  --oc-primary: #004ac6;
+  --oc-primary-container: #2563eb;
+  --oc-primary-dark: #1d4ed8;
+  --oc-primary-subtle: #eff6ff;
+  --oc-on-primary: #ffffff;
+
+  --oc-on-surface: #131b2e;
+  --oc-slate-body: #475569;
+  --oc-slate-muted: #94a3b8;
+
+  --oc-success: #10b981;
+  --oc-error: #ba1a1a;
+
+  --oc-space-2xs: 0.125rem;
+  --oc-space-xs: 0.25rem;
+  --oc-space-sm: 0.5rem;
+  --oc-space-md: 0.75rem;
+  --oc-space-base: 1rem;
+  --oc-space-lg: 1.5rem;
+
+  --oc-radius-lg: 0.25rem;
+  --oc-radius-xl: 0.5rem;
+  /* Matches the source design's "full" radius (0.75rem). Use 9999px for true circles/pills. */
+  --oc-radius-full: 0.75rem;
+
+  --oc-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --oc-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --oc-shadow-active: 0 4px 6px -1px rgba(0, 74, 198, 0.2), 0 2px 4px -2px rgba(0, 74, 198, 0.2);
+  --oc-shadow-cta: 0 4px 6px -1px rgba(0, 74, 198, 0.25), 0 2px 4px -2px rgba(0, 74, 198, 0.25);
+
+  --oc-font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --oc-font-head: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
+
+/* ---------- Base ---------- */
+.oc-screen,
+.oc-screen *,
+.oc-screen *::before,
+.oc-screen *::after {
+  box-sizing: border-box;
+}
+
+.oc-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--oc-surface);
+  color: var(--oc-on-surface);
+  font-family: var(--oc-font-body);
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.oc-screen h1,
+.oc-screen h2,
+.oc-screen p {
+  margin: 0;
+}
+
+.oc-screen button {
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.oc-screen button:disabled {
+  cursor: default;
+}
+
+.oc-screen svg {
+  flex-shrink: 0;
+}
+
+.oc-screen :focus-visible {
+  outline: 2px solid var(--oc-primary-container);
+  outline-offset: 2px;
+}
+
+.oc-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Header ---------- */
+.oc-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: rgba(250, 248, 255, 0.8);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+}
+
+.oc-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-xs);
+  height: 4rem;
+  padding: 0 var(--oc-space-base);
+}
+
+.oc-header__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--oc-on-surface);
+  transition: color 150ms ease;
+}
+
+.oc-header__back:hover {
+  color: var(--oc-primary);
+}
+
+.oc-header__title {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--oc-font-head);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* ---------- Layout ---------- */
+.oc-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--oc-surface);
+}
+
+.oc-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 var(--oc-space-base) var(--oc-space-lg);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- Progress ---------- */
+.oc-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oc-space-xs);
+  padding: var(--oc-space-md) 0 var(--oc-space-sm);
+}
+
+.oc-progress__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oc-space-sm);
+}
+
+.oc-progress__step {
+  color: var(--oc-slate-body);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.oc-progress__dot {
+  margin: 0 var(--oc-space-2xs);
+  color: var(--oc-slate-muted);
+}
+
+.oc-progress__percent {
+  padding: var(--oc-space-2xs) var(--oc-space-sm);
+  border-radius: var(--oc-radius-full);
+  background: var(--oc-primary-subtle);
+  color: var(--oc-primary);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  box-shadow: var(--oc-shadow-sm);
+}
+
+.oc-progress__bars {
+  display: flex;
+  gap: var(--oc-space-xs);
+  width: 100%;
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: var(--oc-radius-full);
+}
+
+.oc-progress__bar {
+  flex: 1;
+  border-radius: var(--oc-radius-full);
+  background: var(--oc-surface-high);
+  transition: background-color 300ms ease;
+}
+
+.oc-progress__bar--done {
+  background: var(--oc-primary-container);
+}
+
+/* ---------- Emblem ---------- */
+.oc-emblem-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--oc-space-md) 0 var(--oc-space-xs);
+}
+
+.oc-emblem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--oc-radius-full);
+  background: var(--oc-primary-subtle);
+  color: var(--oc-primary);
+  box-shadow: var(--oc-shadow-sm);
+}
+
+.oc-emblem__check {
+  position: absolute;
+  right: 0.25rem;
+  bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--oc-radius-full);
+  background: var(--oc-success);
+  color: #ffffff;
+  box-shadow: var(--oc-shadow-sm);
+}
+
+/* ---------- Intro ---------- */
+.oc-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: var(--oc-space-xs) 0 var(--oc-space-md);
+  text-align: center;
+}
+
+.oc-intro__title {
+  font-family: var(--oc-font-head);
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.oc-intro__text {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oc-space-2xs);
+  margin-top: var(--oc-space-xs);
+  padding: 0 var(--oc-space-sm);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.oc-intro__muted {
+  color: var(--oc-slate-body);
+}
+
+.oc-intro__email {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.oc-intro__edit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oc-space-2xs);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--oc-primary);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: color 150ms ease;
+}
+
+.oc-intro__edit:hover {
+  color: var(--oc-primary-dark);
+}
+
+/* ---------- Code slots ---------- */
+.oc-slots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oc-space-md);
+  margin: var(--oc-space-sm) 0;
+}
+
+.oc-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--oc-radius-xl);
+  background: #ffffff;
+  box-shadow: var(--oc-shadow-sm);
+  transition: box-shadow 150ms ease;
+}
+
+.oc-slot--active {
+  box-shadow: var(--oc-shadow-active);
+}
+
+.oc-slot--error {
+  box-shadow: var(--oc-shadow-sm), 0 0 0 1.5px var(--oc-error);
+}
+
+.oc-slot__digit {
+  font-family: var(--oc-font-head);
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--oc-on-surface);
+}
+
+.oc-slot__cursor {
+  width: 0.125rem;
+  height: 1.75rem;
+  border-radius: var(--oc-radius-full);
+  background: var(--oc-primary-container);
+  animation: oc-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes oc-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.oc-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oc-space-xs);
+  margin-top: var(--oc-space-xs);
+  color: var(--oc-error);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* ---------- Resend ---------- */
+.oc-resend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--oc-space-xs);
+  margin: var(--oc-space-sm) 0 var(--oc-space-md);
+}
+
+.oc-resend__timer,
+.oc-resend__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oc-space-2xs);
+  padding: 0.25rem var(--oc-space-sm);
+  border-radius: var(--oc-radius-full);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  box-shadow: var(--oc-shadow-sm);
+}
+
+.oc-resend__timer {
+  background: var(--oc-surface-low);
+  color: var(--oc-slate-body);
+}
+
+.oc-resend__time {
+  color: var(--oc-on-surface);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.oc-resend__button {
+  border: 0;
+  background: var(--oc-primary-subtle);
+  color: var(--oc-primary);
+  font-weight: 600;
+  transition: color 150ms ease;
+}
+
+.oc-resend__button:hover:not(:disabled) {
+  color: var(--oc-primary-dark);
+}
+
+.oc-resend__sms {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oc-space-xs);
+  padding: 0.25rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--oc-primary);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color 150ms ease;
+}
+
+.oc-resend__sms:hover:not(:disabled) {
+  color: var(--oc-primary-dark);
+}
+
+.oc-resend__sms:disabled,
+.oc-resend__button:disabled {
+  opacity: 0.6;
+}
+
+/* ---------- Verify button ---------- */
+.oc-action {
+  width: 100%;
+  margin-top: var(--oc-space-xs);
+}
+
+.oc-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oc-space-xs);
+  width: 100%;
+  height: 3rem;
+  border: 0;
+  border-radius: var(--oc-radius-xl);
+  background: var(--oc-primary-container);
+  color: var(--oc-on-primary);
+  font-family: var(--oc-font-head);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  box-shadow: var(--oc-shadow-cta);
+  transition: background-color 150ms ease, transform 150ms ease, opacity 150ms ease;
+}
+
+.oc-submit:hover:not(:disabled) {
+  background: var(--oc-primary-dark);
+}
+
+.oc-submit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.oc-submit:disabled {
+  opacity: 0.75;
+  cursor: progress;
+}
+
+.oc-spin {
+  animation: oc-spin 1s linear infinite;
+}
+
+@keyframes oc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Keypad ---------- */
+.oc-keypad {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oc-space-xs);
+  width: 100%;
+  margin-top: var(--oc-space-md);
+  padding: var(--oc-space-xs) var(--oc-space-sm) var(--oc-space-sm);
+  border-radius: var(--oc-radius-xl);
+  background: var(--oc-surface-low);
+  box-shadow: var(--oc-shadow-sm);
+}
+
+.oc-keypad__row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--oc-space-xs);
+  width: 100%;
+}
+
+.oc-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 3.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--oc-radius-lg);
+  background: #ffffff;
+  color: var(--oc-on-surface);
+  box-shadow: var(--oc-shadow-sm);
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.oc-key:active:not(:disabled) {
+  background: var(--oc-surface-high);
+  transform: scale(0.95);
+}
+
+.oc-key:disabled {
+  opacity: 0.6;
+}
+
+.oc-key__digit {
+  font-family: var(--oc-font-head);
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.oc-key__letters {
+  height: 0.75rem;
+  margin-top: var(--oc-space-2xs);
+  color: var(--oc-slate-muted);
+  font-size: 12px;
+  line-height: 0.75rem;
+  font-weight: 500;
+}
+
+.oc-key--ghost {
+  background: transparent;
+  color: var(--oc-slate-body);
+  box-shadow: none;
+}
+
+.oc-key--ghost:active:not(:disabled) {
+  background: var(--oc-surface-high);
+}
+
+@media (hover: hover) {
+  .oc-key--ghost:hover:not(:disabled) {
+    background: #ffffff;
+  }
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .oc-screen *,
+  .oc-screen *::before,
+  .oc-screen *::after {
+    transition: none !important;
+  }
+
+  .oc-slot__cursor {
+    animation: none;
+  }
+
+  .oc-spin {
+    animation-duration: 2s;
+  }
+}

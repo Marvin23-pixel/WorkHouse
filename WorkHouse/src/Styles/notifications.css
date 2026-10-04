@@ -1,0 +1,541 @@
+/* ==============================
+   Notifications - Fully Scoped
+   Safe – will not affect AdminDashboard
+   ============================== */
+
+.notifications-page {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem 2.5rem;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* ---------- Top Bar ---------- */
+.notifications-page .notif-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  margin-left: -1rem;
+  margin-right: -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(8px);
+  z-index: 20;
+}
+
+.notifications-page .notif-icon-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: #f1f5f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.notifications-page .notif-icon-btn:hover {
+  background: #e2e8f0;
+}
+
+.notifications-page .notif-brand-name {
+  font-weight: 800;
+  font-size: 0.875rem;
+  letter-spacing: -0.025em;
+  /* text-transform: uppercase; */
+  color: #0f172a;
+  margin-left: -11.5rem;
+}
+
+.notifications-page .notif-bell-wrap {
+  position: relative;
+}
+.notifications-page .notif-alert-dot {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #f43f5e;
+  border: 1px solid white;
+}
+
+/* ---------- Header ---------- */
+.notifications-page .notif-header {
+  margin-bottom: 1.25rem;
+}
+
+.notifications-page .notif-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.notifications-page .notif-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.notifications-page .notif-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  border: 1px solid rgba(167, 243, 208, 0.8);
+  color: #047857;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.notifications-page .notif-live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #10b981;
+  animation: notif-pulse 2s infinite;
+}
+
+@keyframes notif-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.notifications-page .notif-subtitle {
+  font-size: 13px;
+  color: #475569;
+  margin: 0.375rem 0 0;
+  line-height: 1.5;
+}
+
+/* ---------- Search + Filters ---------- */
+.notifications-page .notif-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.notifications-page .notif-search-wrap {
+  position: relative;
+}
+
+.notifications-page .notif-search-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.notifications-page .notif-search-input {
+  width: 100%;
+  padding: 0.625rem 2.25rem 0.625rem 2.5rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  outline: none;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+.notifications-page .notif-search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+.notifications-page .notif-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.notifications-page .notif-clear-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+.notifications-page .notif-clear-btn:hover {
+  color: #475569;
+}
+
+.notifications-page .notif-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-top: 0.125rem;
+}
+.notifications-page .notif-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.notifications-page .notif-filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: white;
+  color: #475569;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.notifications-page .notif-filter-chip:hover {
+  background: #f8fafc;
+}
+.notifications-page .notif-filter-chip.active {
+  background: #2563eb;
+  color: white;
+  border-color: transparent;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.notifications-page .notif-chip-count {
+  font-size: 10px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  padding: 0.1rem 0.375rem;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  color: #475569;
+}
+.notifications-page .notif-filter-chip.active .notif-chip-count {
+  background: rgba(29, 78, 216, 0.6);
+  color: white;
+}
+
+/* ---------- Count Row ---------- */
+.notifications-page .notif-count-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.25rem;
+  margin-bottom: 0.625rem;
+}
+
+.notifications-page .notif-count-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.notifications-page .notif-count-value {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ---------- Activity Cards ---------- */
+.notifications-page .notif-list {
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  overflow: hidden;
+}
+
+.notifications-page .notif-card {
+  padding: 0.875rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+.notifications-page .notif-card:last-child {
+  border-bottom: none;
+}
+.notifications-page .notif-card:hover {
+  background: #f8fafc;
+}
+
+.notifications-page .notif-card-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.notifications-page .notif-card-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  min-width: 0;
+}
+
+.notifications-page .notif-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+.notifications-page .notif-avatar-blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.notifications-page .notif-avatar-purple {
+  background: #faf5ff;
+  color: #7e22ce;
+}
+.notifications-page .notif-avatar-amber {
+  background: #fffbeb;
+  color: #b45309;
+}
+.notifications-page .notif-avatar-emerald {
+  background: #ecfdf5;
+  color: #047857;
+}
+.notifications-page .notif-avatar-rose {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.notifications-page .notif-card-body {
+  min-width: 0;
+}
+
+.notifications-page .notif-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.notifications-page .notif-actor {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.notifications-page .notif-dot-sep {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.notifications-page .notif-action {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+.notifications-page .notif-action-blue { color: #2563eb; }
+.notifications-page .notif-action-purple { color: #7e22ce; }
+.notifications-page .notif-action-amber { color: #b45309; }
+.notifications-page .notif-action-emerald { color: #047857; }
+.notifications-page .notif-action-rose { color: #be123c; }
+
+.notifications-page .notif-detail {
+  font-size: 0.75rem;
+  color: #334155;
+  margin: 0.25rem 0 0;
+  line-height: 1.4;
+}
+
+.notifications-page .notif-bold { font-weight: 700; color: #0f172a; }
+.notifications-page .notif-amber { color: #b45309; font-weight: 600; }
+.notifications-page .notif-emerald { color: #047857; font-weight: 700; }
+.notifications-page .notif-blue { color: #1d4ed8; font-weight: 500; }
+.notifications-page .notif-muted { color: #64748b; }
+.notifications-page .notif-mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.notifications-page .notif-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 11px;
+  color: #64748b;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  margin-top: 0.25rem;
+}
+
+.notifications-page .notif-time {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.notifications-page .notif-clock {
+  color: #94a3b8;
+}
+.notifications-page .notif-sep { color: #94a3b8; }
+.notifications-page .notif-id {
+  font-size: 10px;
+  color: #94a3b8;
+  font-family: system-ui, sans-serif;
+}
+
+/* Badges */
+.notifications-page .notif-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+.notifications-page .notif-badge-blue {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: rgba(191, 219, 254, 0.6);
+}
+.notifications-page .notif-badge-purple {
+  background: #faf5ff;
+  color: #7e22ce;
+  border-color: rgba(233, 213, 255, 0.6);
+}
+.notifications-page .notif-badge-amber {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: rgba(253, 230, 138, 0.6);
+}
+.notifications-page .notif-badge-slate {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: rgba(226, 232, 240, 0.6);
+}
+.notifications-page .notif-badge-rose {
+  background: #fff1f2;
+  color: #be123c;
+  border-color: rgba(254, 205, 211, 0.6);
+}
+
+/* ---------- Empty State ---------- */
+.notifications-page .notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  background: white;
+  border-radius: 1rem;
+  border: 1px dashed #e2e8f0;
+  margin: 1rem 0;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.notifications-page .notif-empty-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+}
+
+.notifications-page .notif-empty h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.25rem;
+}
+
+.notifications-page .notif-empty p {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+  max-width: 240px;
+}
+
+.notifications-page .notif-reset-btn {
+  margin-top: 1rem;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #2563eb;
+  background: #eff6ff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.notifications-page .notif-reset-btn:hover {
+  background: #dbeafe;
+}
+
+/* ---------- Footer ---------- */
+.notifications-page .notif-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  text-align: center;
+}
+
+.notifications-page .notif-footer-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.notifications-page .notif-check {
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.notifications-page .notif-version {
+  font-size: 11px;
+  color: #94a3b8;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  margin: 0.125rem 0 0;
+}

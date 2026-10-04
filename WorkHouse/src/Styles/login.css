@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap');
+
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --ink: #131b2e;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --canvas: #f8fafc;
+  --success: #10b981;
+  --error-bg: #ffdad6;
+  --error-ink: #93000a;
+}
+
+* { box-sizing: border-box; }
+
+.login-page {
+  min-height: 100vh;
+  padding: 16px;
+  color: var(--ink);
+  background: var(--canvas);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+}
+
+.login-shell { width: min(100%, 520px); margin: 0 auto; }
+
+.login-toolbar { display: flex; align-items: center; justify-content: space-between; }
+.status-pill, .context-pill, .icon-button { background: rgba(255,255,255,.9); border: 1px solid rgba(226,232,240,.85); }
+.status-pill { display: inline-flex; align-items: center; padding: 7px 11px; border-radius: 999px; }
+.status-dot { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: var(--success); }
+.status-dot-small { width: 6px; height: 6px; }
+.toolbar-actions { display: flex; gap: 8px; }
+.icon-button { position: relative; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; color: #475569; border-radius: 50%; cursor: pointer; }
+.icon-button:hover { color: var(--ink); }
+.notification-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border: 2px solid white; border-radius: 50%; background: var(--blue); }
+
+.brand-section { padding: 28px 0 24px; text-align: center; }
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.brand-section h1 { color: black; margin: 0; font: 700 20px/1.35 'Plus Jakarta Sans', sans-serif; letter-spacing: -.02em;  }
+.context-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 40px; }
+.context-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; color: #2d3137; border-radius: 999px; font-size: 11px; font-weight: 600; }
+.context-pill svg { color: var(--blue); }
+.context-pill-success { color: #047857; border-color: #bbf7d0; background: #ecfdf5; }
+
+.auth-card { padding: 22px; border: 1px solid rgba(226,232,240,.9); border-radius: 36px; background: white; box-shadow: 0 4px 18px rgba(15,23,42,.05); margin-top: -5px; }
+.card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.card-heading h2 { margin: 0; font-size: 13px; line-height: 18px; font-weight: 700; margin-left: 120px; }
+.card-heading p { margin: 4px 0 0; color: #94a3b8; font-size: 12px; translate: 70px; }
+.role-toggle, .preset, .forgot-button, .input-action, .error-banner > button { border: 0; background: transparent; cursor: pointer; }
+.role-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 3px 0; color: var(--blue); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.role-toggle:hover, .forgot-button:hover { color: var(--blue-dark); }
+.preset-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.preset { padding: 8px 12px; color: #475569; border: 1px solid var(--border); border-radius: 10px; background: #f1f5f9; font-size: 12px; font-weight: 600; }
+.preset.active { color: white; border-color: var(--blue); background: var(--blue); }
+
+.error-banner { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; padding: 11px; color: var(--error-ink); border-radius: 10px; background: var(--error-bg); }
+.error-banner > svg { flex: 0 0 auto; margin-top: 1px; }
+.error-banner > div { flex: 1; min-width: 0; }
+.error-banner strong { display: block; font-size: 11px; }
+.error-banner p { margin: 3px 0 0; font-size: 12px; line-height: 16px; }
+.error-banner > button { padding: 0; color: inherit; }
+
+.login-form { display: flex; flex-direction: column; gap: 7px; }
+.field-label { margin-top: 7px; color: #475569; font-size: 11px; font-weight: 700; }
+.input-wrap { position: relative; display: flex; align-items: center; border: 1px solid var(--border); border-radius: 12px; background: rgba(248,250,252,.75); transition: .15s ease; }
+.input-wrap:focus-within { border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.input-wrap input { width: 100%; height: 44px; padding: 0 40px 0 38px; border: 0; outline: 0; color: var(--ink); background: transparent; border-radius: 12px; font: 14px Inter, sans-serif; }
+.input-wrap input::placeholder { color: #94a3b8; }
+.input-icon { position: absolute; left: 12px; color: #94a3b8; pointer-events: none; }
+.input-action { position: absolute; right: 10px; display: grid; place-items: center; padding: 3px; color: #94a3b8; }
+.input-action:hover { color: var(--ink); }
+.form-options { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 7px; }
+.remember-option { display: flex; align-items: center; gap: 8px; color: #475569; font-size: 12px; cursor: pointer; }
+.remember-option input { width: 16px; height: 16px; margin: 0; accent-color: var(--blue); }
+.forgot-button { padding: 0; color: var(--blue); font-size: 11px; font-weight: 700; }
+.submit-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; margin-top: 9px; border: 1px solid var(--blue); border-radius: 12px; color: white; background: var(--blue); box-shadow: 0 2px 5px rgba(37,99,235,.2); font-size: 14px; font-weight: 700; cursor: pointer; transition: .15s ease; }
+.submit-button:hover { background: var(--blue-dark); }
+.submit-button:active { transform: scale(.99); }
+.submit-button:disabled { opacity: .75; cursor: not-allowed; }
+.submit-button.authorized { border-color: var(--success); background: var(--success); }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.security-footer { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 50px 16px 8px; text-align: center; color: #94a3b8; font-size: 12px; }
+.security-footer div, .security-footer p { display: flex; align-items: center; gap: 6px; margin: 0; }
+.security-footer div { color: #64748b; }
+.security-footer div svg { color: var(--blue); margin-top: -1px;}
+
+@media (max-width: 480px) {
+  .login-page { padding: 12px; }
+  .auth-card { padding: 18px; border-radius: 28px; }
+  .card-heading { flex-direction: column; gap: 8px; }
+  .role-toggle { align-self: flex-start; }
+}

@@ -1,0 +1,608 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Plus+Jakarta+Sans:wght@100..800&display=swap');
+
+/* ---------- Tokens ---------- */
+.ie-screen {
+  --ie-surface: #faf8ff;
+  --ie-surface-lowest: #ffffff;
+  --ie-surface-low: #f2f3ff;
+  --ie-surface-container: #eaedff;
+  --ie-surface-high: #e2e7ff;
+
+  --ie-primary: #004ac6;
+  --ie-primary-container: #2563eb;
+  --ie-primary-dark: #1d4ed8;
+  --ie-primary-subtle: #eff6ff;
+  --ie-on-primary: #ffffff;
+
+  --ie-on-surface: #131b2e;
+  --ie-on-surface-variant: #434655;
+  --ie-slate-body: #475569;
+  --ie-slate-muted: #94a3b8;
+
+  --ie-brand-red: #dd3333;
+  --ie-error: #ba1a1a;
+
+  --ie-space-2xs: 0.125rem;
+  --ie-space-xs: 0.25rem;
+  --ie-space-sm: 0.5rem;
+  --ie-space-md: 0.75rem;
+  --ie-space-base: 1rem;
+  --ie-space-lg: 1.5rem;
+
+  --ie-radius-lg: 0.25rem;
+  --ie-radius-xl: 0.5rem;
+  /* Matches the source design's "full" radius (0.75rem). Use 9999px for true circles/pills. */
+  --ie-radius-full: 0.75rem;
+
+  --ie-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --ie-shadow-input: 0 1px 3px rgba(15, 23, 42, 0.08);
+
+  --ie-font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ie-font-head: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
+
+/* ---------- Base ---------- */
+.ie-screen,
+.ie-screen *,
+.ie-screen *::before,
+.ie-screen *::after {
+  box-sizing: border-box;
+}
+
+.ie-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--ie-surface);
+  color: var(--ie-on-surface);
+  font-family: var(--ie-font-body);
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ie-screen h1,
+.ie-screen h2,
+.ie-screen p {
+  margin: 0;
+}
+
+.ie-screen button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.ie-screen svg {
+  flex-shrink: 0;
+}
+
+.ie-screen :focus-visible {
+  outline: 2px solid var(--ie-primary-container);
+  outline-offset: 2px;
+}
+
+.ie-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Header ---------- */
+.ie-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: rgba(250, 248, 255, 0.8);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+}
+
+.ie-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ie-space-xs);
+  height: 4rem;
+  padding: 0 var(--ie-space-base);
+}
+
+.ie-header__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ie-on-surface);
+  transition: color 150ms ease;
+}
+
+.ie-header__back:hover {
+  color: var(--ie-primary);
+}
+
+.ie-header__title {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ie-font-head);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color:black
+}
+
+/* ---------- Layout ---------- */
+.ie-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--ie-surface);
+}
+
+.ie-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ie-space-lg);
+  width: 100%;
+  padding: var(--ie-space-md) var(--ie-space-base);
+}
+
+.ie-card {
+  background: var(--ie-surface-lowest);
+  border-radius: var(--ie-radius-xl);
+  box-shadow: var(--ie-shadow-sm);
+}
+
+/* ---------- Step progress ---------- */
+.ie-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ie-space-xs);
+  padding: var(--ie-space-md);
+}
+
+.ie-progress__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ie-progress__step {
+  color: var(--ie-primary);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.ie-progress__name {
+  color: var(--ie-on-surface-variant);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.ie-progress__bars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ie-space-xs);
+  margin-top: var(--ie-space-2xs);
+}
+
+.ie-progress__bar {
+  height: 0.375rem;
+  border-radius: var(--ie-radius-full);
+  background: var(--ie-surface-high);
+}
+
+.ie-progress__bar--done {
+  background: var(--ie-primary-container);
+}
+
+/* ---------- Hero ---------- */
+.ie-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  padding: var(--ie-space-lg);
+  text-align: center;
+}
+
+.ie-hero__glow {
+  position: absolute;
+  top: -3rem;
+  right: -3rem;
+  width: 8rem;
+  height: 8rem;
+  border-radius: var(--ie-radius-full);
+  background: var(--ie-primary-subtle);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.ie-hero__emblem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: var(--ie-space-md);
+  border-radius: var(--ie-radius-full);
+  background: var(--ie-primary-subtle);
+  color: var(--ie-primary);
+}
+
+.ie-hero__lock {
+  position: absolute;
+  right: -0.25rem;
+  bottom: -0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--ie-radius-full);
+  background: #0053db;
+  color: var(--ie-on-primary);
+  box-shadow: var(--ie-shadow-sm);
+}
+
+.ie-hero__title {
+  margin-bottom: var(--ie-space-xs);
+  font-family: var(--ie-font-head);
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ie-hero__text {
+  max-width: 320px;
+  color: var(--ie-on-surface-variant);
+}
+
+.ie-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ie-space-2xs);
+  margin-top: var(--ie-space-md);
+  padding: var(--ie-space-2xs) var(--ie-space-sm);
+  border-radius: var(--ie-radius-full);
+  background: var(--ie-surface-low);
+  color: var(--ie-slate-body);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.ie-hero__badge svg {
+  color: var(--ie-primary);
+}
+
+/* ---------- Form ---------- */
+.ie-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ie-space-md);
+  padding: var(--ie-space-lg);
+}
+
+.ie-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ie-space-xs);
+}
+
+.ie-field__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ie-field__label {
+  display: flex;
+  align-items: center;
+  gap: var(--ie-space-2xs);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.ie-field__asterisk {
+  color: var(--ie-brand-red);
+  font-weight: 700;
+}
+
+.ie-field__tag {
+  padding: var(--ie-space-2xs) var(--ie-space-xs);
+  border-radius: var(--ie-radius-full);
+  background: var(--ie-surface-container);
+  color: var(--ie-on-surface-variant);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.ie-field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ie-space-xs);
+  color: var(--ie-error);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.ie-field__error svg {
+  margin-top: 1px;
+}
+
+/* Input */
+.ie-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ie-input__icon {
+  position: absolute;
+  left: 0.875rem;
+  color: var(--ie-slate-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+.ie-input__control {
+  width: 100%;
+  height: 3rem;
+  padding: 0 2.5rem 0 2.75rem;
+  border: 0;
+  border-radius: var(--ie-radius-xl);
+  background: #ffffff;
+  color: var(--ie-on-surface);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  box-shadow: var(--ie-shadow-input);
+  transition: box-shadow 150ms ease, background-color 150ms ease;
+}
+
+.ie-input__control::placeholder {
+  color: var(--ie-slate-muted);
+}
+
+.ie-input__control:focus {
+  outline: none;
+}
+
+.ie-input__control:focus-visible {
+  outline: none;
+  box-shadow: var(--ie-shadow-input), 0 0 0 2px var(--ie-primary-container);
+}
+
+.ie-input__control[aria-invalid='true'] {
+  box-shadow: var(--ie-shadow-input), 0 0 0 1.5px var(--ie-error);
+}
+
+.ie-input__control:disabled {
+  opacity: 0.7;
+}
+
+.ie-input__clear {
+  position: absolute;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ie-radius-full);
+  background: transparent;
+  color: var(--ie-slate-muted);
+  transition: color 150ms ease;
+}
+
+.ie-input__clear:hover {
+  color: var(--ie-on-surface);
+}
+
+/* Domain chip */
+.ie-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ie-space-xs);
+  padding-top: var(--ie-space-2xs);
+}
+
+.ie-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ie-space-2xs);
+  padding: 0.25rem var(--ie-space-sm);
+  border: 0;
+  border-radius: var(--ie-radius-full);
+  background: var(--ie-surface-low);
+  color: var(--ie-on-surface-variant);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background-color 150ms ease;
+}
+
+.ie-chip:hover {
+  background: var(--ie-surface-container);
+}
+
+/* Submit */
+.ie-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ie-space-sm);
+  width: 100%;
+  height: 3rem;
+  margin-top: var(--ie-space-xs);
+  border: 0;
+  border-radius: var(--ie-radius-xl);
+  background: var(--ie-primary-container);
+  color: var(--ie-on-primary);
+  font-family: var(--ie-font-head);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  box-shadow: var(--ie-shadow-sm);
+  transition: background-color 150ms ease, transform 150ms ease, opacity 150ms ease;
+}
+
+.ie-submit:hover {
+  background: var(--ie-primary-dark);
+}
+
+.ie-submit:active {
+  transform: scale(0.99);
+}
+
+.ie-submit:disabled {
+  opacity: 0.75;
+  cursor: progress;
+}
+
+/* ---------- Help ---------- */
+.ie-help {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ie-space-md);
+  padding: var(--ie-space-md);
+  border-radius: var(--ie-radius-xl);
+  background: var(--ie-surface-low);
+  box-shadow: var(--ie-shadow-sm);
+}
+
+.ie-help__icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: var(--ie-space-2xs);
+  border-radius: var(--ie-radius-full);
+  background: var(--ie-primary-subtle);
+  color: var(--ie-primary);
+}
+
+.ie-help__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--ie-space-2xs);
+  min-width: 0;
+}
+
+.ie-help__title {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.ie-help__text {
+  color: var(--ie-on-surface-variant);
+  font-size: 13px;
+  line-height: 1.625;
+}
+
+.ie-help__link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--ie-space-2xs);
+  padding-top: var(--ie-space-2xs);
+  color: var(--ie-primary);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.ie-help__link:hover {
+  color: var(--ie-primary-dark);
+}
+
+/* ---------- Footer ---------- */
+.ie-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ie-space-md);
+  padding: var(--ie-space-xs) 0 var(--ie-space-lg);
+}
+
+.ie-footer__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ie-space-2xs);
+  padding: var(--ie-space-xs) var(--ie-space-sm);
+  border: 0;
+  border-radius: var(--ie-radius-lg);
+  background: transparent;
+  color: var(--ie-on-surface-variant);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color 150ms ease;
+}
+
+.ie-footer__back:hover {
+  color: var(--ie-primary);
+}
+
+.ie-footer__secure {
+  display: flex;
+  align-items: center;
+  gap: var(--ie-space-2xs);
+  color: var(--ie-slate-muted);
+  font-size: 12px;
+  line-height: 16px;
+  user-select: none;
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ie-screen * {
+    transition: none !important;
+  }
+}
