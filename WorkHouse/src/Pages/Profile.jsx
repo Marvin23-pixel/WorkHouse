@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Badge,
   Check,
@@ -25,6 +25,17 @@ const STAFF_ID = "#DS-1042";
 export default function Profile({ onNavigate, onLogout, onChangePin }) {
   const [copied, setCopied] = useState(false);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  // Close the logout popup with the Escape key.
+  useEffect(() => {
+    if (!showLogoutConfirm) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setShowLogoutConfirm(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [showLogoutConfirm]);
 
   const copyStaffId = async () => {
     try {
@@ -37,9 +48,12 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
   };
 
   const handleLogout = () => {
-    if (window.confirm("Lock POS Terminal 01 and return to staff PIN entry?")) {
-      onLogout?.();
-    }
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
+    onLogout?.();
   };
 
   return (
@@ -147,6 +161,47 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
           <button className="nav-item active" onClick={() => onNavigate?.("profile")} aria-label="Profile"><UserRound size={22} /><span>Profile</span></button>
         </div>
       </nav>
+
+      {showLogoutConfirm && (
+        <div
+          className="logout-overlay"
+          role="presentation"
+          onClick={() => setShowLogoutConfirm(false)}
+        >
+          <div
+            className="logout-dialog"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="logout-dialog-title"
+            aria-describedby="logout-dialog-text"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="logout-dialog-icon" aria-hidden="true">
+              <LogOut size={26} />
+            </div>
+            <h2 id="logout-dialog-title">Log out?</h2>
+            <p id="logout-dialog-text">
+              Lock POS Terminal 01 and return to staff PIN entry?
+            </p>
+            <div className="logout-dialog-actions">
+              <button
+                type="button"
+                className="logout-dialog-cancel"
+                onClick={() => setShowLogoutConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="logout-dialog-confirm"
+                onClick={confirmLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ChatbotWindow isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
     </div>

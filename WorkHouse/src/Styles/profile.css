@@ -228,3 +228,113 @@
     max-width: 850px;
   }
 }
+
+/* =========================================================
+   LOGOUT CONFIRMATION POPUP
+========================================================= */
+
+.logout-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(19, 27, 46, 0.45);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.logout-dialog {
+  width: 100%;
+  max-width: 340px;
+  box-sizing: border-box;
+  padding: 24px 20px 20px;
+  border-radius: 20px;
+  background: var(--profile-surface);
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(19, 27, 46, 0.25);
+}
+
+.logout-dialog-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 218, 214, 0.6);
+  color: var(--profile-danger);
+}
+
+.logout-dialog h2 {
+  margin: 0;
+  color: black;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.logout-dialog p {
+  margin: 6px 0 20px;
+  color: var(--profile-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.logout-dialog-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.logout-dialog-actions button {
+  flex: 1;
+  height: 46px;
+  border: 0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.logout-dialog-actions button:active {
+  transform: scale(0.97);
+}
+
+.logout-dialog-cancel {
+  background: var(--profile-surface-container);
+  color: var(--profile-text);
+}
+
+.logout-dialog-cancel:hover {
+  background: #dfe3fb;
+}
+
+.logout-dialog-confirm {
+  background: var(--profile-danger);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(221, 51, 51, 0.3);
+}
+
+.logout-dialog-confirm:hover {
+  background: #c42b2b;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logout-overlay { animation: logout-fade 0.18s ease; }
+  .logout-dialog { animation: logout-pop 0.2s ease; }
+
+  @keyframes logout-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes logout-pop {
+    from { opacity: 0; transform: scale(0.94) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+}
