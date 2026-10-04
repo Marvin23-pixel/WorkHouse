@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Badge,
   Check,
@@ -6,6 +6,7 @@ import {
   Copy,
   House,
   History,
+  LoaderCircle,
   LockKeyhole,
   LogOut,
   Monitor,
@@ -22,24 +23,30 @@ import ChatbotWindow from "../Adminfunctions/ChatbotWindow.jsx";
 
 const STAFF_ID = "#DS-1042";
 const STAFF_NAME = "Sarah Eniola";
+const LOGOUT_DELAY_MS = 2500; // how long "Logging out..." shows in the popup
 
 export default function Profile({ onNavigate, onLogout, onChangePin }) {
   const [copied, setCopied] = useState(false);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const logoutTimer = useRef(null);
 
   // First name taken from the same name shown on the page.
   const firstName = STAFF_NAME.trim().split(" ")[0];
 
-  // Close the logout popup with the Escape key.
+  // Clear the pending logout timer if the page unmounts.
+  useEffect(() => () => clearTimeout(logoutTimer.current), []);
+
+  // Close the logout popup with the Escape key (disabled while logging out).
   useEffect(() => {
-    if (!showLogoutConfirm) return undefined;
+    if (!showLogoutConfirm || isLoggingOut) return undefined;
     const onKeyDown = (event) => {
       if (event.key === "Escape") setShowLogoutConfirm(false);
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [showLogoutConfirm]);
+  }, [showLogoutConfirm, isLoggingOut]);
 
   const copyStaffId = async () => {
     try {
@@ -55,9 +62,18 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
     setShowLogoutConfirm(true);
   };
 
-  const confirmLogout = () => {
+  const closeLogoutPopup = () => {
+    if (isLoggingOut) return;
     setShowLogoutConfirm(false);
-    onLogout?.();
+  };
+
+  // Keeps the popup open, shows "Logging out...", then calls onLogout.
+  const confirmLogout = () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    logoutTimer.current = setTimeout(() => {
+      onLogout?.();
+    }, LOGOUT_DELAY_MS);
   };
 
   return (
@@ -170,39 +186,53 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
         <div
           className="logout-overlay"
           role="presentation"
-          onClick={() => setShowLogoutConfirm(false)}
+          onClick={closeLogoutPopup}
         >
           <div
             className="logout-dialog"
             role="alertdialog"
             aria-modal="true"
+            aria-busy={isLoggingOut}
             aria-labelledby="logout-dialog-title"
             aria-describedby="logout-dialog-text"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="logout-dialog-icon" aria-hidden="true">
-              <LogOut size={26} />
+            <div
+              className={`logout-dialog-icon${isLoggingOut ? " is-loading" : ""}`}
+              aria-hidden="true"
+            >
+              {isLoggingOut ? (
+                <LoaderCircle className="logout-spin" size={26} />
+              ) : (
+                <LogOut size={26} />
+              )}
             </div>
-            <h2 id="logout-dialog-title">Log out?</h2>
+            <h2 id="logout-dialog-title">
+              {isLoggingOut ? "Logging out..." : "Log out?"}
+            </h2>
             <p id="logout-dialog-text">
-              {firstName}, are you sure you want to lock POS Terminal 01 and return to staff PIN entry?
+              {isLoggingOut
+                ? `Goodbye ${firstName}. Locking POS Terminal 01, please wait.`
+                : `${firstName}, are you sure you want to lock POS Terminal 01 and return to staff PIN entry?`}
             </p>
-            <div className="logout-dialog-actions">
-              <button
-                type="button"
-                className="logout-dialog-cancel"
-                onClick={() => setShowLogoutConfirm(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="logout-dialog-confirm"
-                onClick={confirmLogout}
-              >
-                Logout
-              </button>
-            </div>
+            {!isLoggingOut && (
+              <div className="logout-dialog-actions">
+                <button
+                  type="button"
+                  className="logout-dialog-cancel"
+                  onClick={closeLogoutPopup}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="logout-dialog-confirm"
+                  onClick={confirmLogout}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
