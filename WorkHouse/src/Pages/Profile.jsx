@@ -21,11 +21,15 @@ import Logo from "../assets/Logo.png";
 import ChatbotWindow from "../Adminfunctions/ChatbotWindow.jsx";
 
 const STAFF_ID = "#DS-1042";
+const STAFF_NAME = "Sarah Eniola";
 
 export default function Profile({ onNavigate, onLogout, onChangePin }) {
   const [copied, setCopied] = useState(false);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  // First name taken from the same name shown on the page.
+  const firstName = STAFF_NAME.trim().split(" ")[0];
 
   // Close the logout popup with the Escape key.
   useEffect(() => {
@@ -130,7 +134,7 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
           <section className="profile-hero-card">
             <div className="profile-status-row"><span className="profile-status-chip"><span /> Online</span></div>
             <div className="profile-avatar-wrap"><div className="profile-avatar">👩‍💼</div><span className="profile-avatar-online"><span /></span></div>
-            <h1>Sarah Eniola</h1>
+            <h1>{STAFF_NAME}</h1>
             <p className="profile-role"><span>Sales Representative</span><i>•</i><strong>Bonny HQ</strong></p>
             <div className="profile-shift-pill"><ShieldCheck size={15} /> Active shift</div>
           </section>
@@ -181,7 +185,7 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
             </div>
             <h2 id="logout-dialog-title">Log out?</h2>
             <p id="logout-dialog-text">
-              Lock POS Terminal 01 and return to staff PIN entry?
+              {firstName}, are you sure you want to lock POS Terminal 01 and return to staff PIN entry?
             </p>
             <div className="logout-dialog-actions">
               <button
@@ -208,4 +212,4 @@ export default function Profile({ onNavigate, onLogout, onChangePin }) {
   );
 }
 
-export { STAFF_ID };
+export { STAFF_ID, STAFF_NAME };
