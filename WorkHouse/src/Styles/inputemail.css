@@ -549,7 +549,7 @@
   align-items: center;
   align-self: flex-start;
   gap: var(--ie-space-2xs);
-  margin-left: 6.5rem;
+  margin-left: 5.5rem;
   padding-top: var(--ie-space-2xs);
   color: var(--ie-primary);
   font-size: 13px;
