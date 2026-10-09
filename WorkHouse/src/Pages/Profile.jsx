@@ -21,7 +21,7 @@ import Logo from "../assets/Logo.png";
 import ChatbotWindow from "../Adminfunctions/ChatbotWindow.jsx";
 
 const STAFF_ID = "#DS-1042";
-const STAFF_NAME = "Sarah Eniola";
+const STAFF_NAME = "Precious George";
 const LOGOUT_DELAY_MS = 2500; // how long "Logging out..." shows in the popup
 
 export default function Profile({ onNavigate, onLogout, onChangePin }) {

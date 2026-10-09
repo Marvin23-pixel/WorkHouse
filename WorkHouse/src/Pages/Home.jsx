@@ -100,7 +100,7 @@ function Home({ onNavigate, isChatbotOpen, onOpenChatbot, onCloseChatbot }) {
               <div className="online-pill"><span className="online-pulse" /><span>Online</span></div>
             </div>
             <div className="greeting-text">
-              <h1>Good evening, Sarah👋</h1>
+              <h1>Good evening, Precious👋</h1>
               <p className="greeting-description">Sales Representative</p>
             </div>
           </section>
