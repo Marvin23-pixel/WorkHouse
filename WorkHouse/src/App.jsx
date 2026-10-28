@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Welcome from "./Pages/Welcome";
 import Login from "./Pages/Login";
 import InputEmail from "./PasswordReset/InputEmail";
 import OtpCode from "./PasswordReset/OtpCode";
@@ -22,8 +23,9 @@ function App() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   // Which screen to show before the user is signed in:
-  // "login" | "forgot" (enter email) | "verify" (enter 4-digit code) | "reset" (new password)
-  const [authScreen, setAuthScreen] = useState("login");
+  // "welcome" (first screen) | "login" | "forgot" (enter email)
+  // | "verify" (enter 4-digit code) | "reset" (new password)
+  const [authScreen, setAuthScreen] = useState("welcome");
 
   // Email entered on the forgot-password screen, reused by the code screen
   const [recoveryEmail, setRecoveryEmail] = useState("");
@@ -54,8 +56,12 @@ function App() {
     setAuthScreen("login");
   };
 
-  // Before sign-in: Login, or the Forgot Password email screen.
+  // Before sign-in: Welcome, Login, or the Forgot Password flow.
   if (!isAuthenticated) {
+    if (authScreen === "welcome") {
+      return <Welcome onContinue={() => setAuthScreen("login")} />;
+    }
+
     if (authScreen === "forgot") {
       return (
         <InputEmail

@@ -1,0 +1,239 @@
+.welcome-page {
+  --font: Georgia, "Times New Roman", Times, serif; /* change to system-ui for a sans look */
+  --blue: #0b4fc9;
+  --blue-light: #eaf1ff;
+  --ink: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(180deg, #dfe6f5 0%, #f4f6fb 18%, #ffffff 45%);
+  font-family: var(--font);
+  color: var(--ink);
+  box-sizing: border-box;
+}
+
+.welcome-page *,
+.welcome-page *::before,
+.welcome-page *::after {
+  box-sizing: border-box;
+}
+
+.welcome-container {
+  width: 100%;
+  max-width: 440px;
+  padding: 24px 18px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Badge */
+.welcome-badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #d9e0ee;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.welcome-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+/* Heading */
+.welcome-title {
+  margin: 18px 0 10px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.welcome-subtitle {
+  margin: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Hero card */
+.welcome-hero-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+.welcome-hero-img {
+  display: block;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+.welcome-hero-caption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.welcome-hero-caption-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--blue-light);
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Action cards */
+.welcome-actions {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.welcome-action {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+.welcome-action:hover {
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+}
+
+.welcome-action:active {
+  transform: scale(0.99);
+}
+
+.welcome-action-icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-action-icon--primary {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.welcome-action-icon--light {
+  background: var(--blue-light);
+  color: #3b5a8f;
+}
+
+.welcome-action-plus {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  background: var(--blue-light);
+  border-radius: 50%;
+}
+
+.welcome-action-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.welcome-action-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.welcome-action-text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.welcome-action-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.welcome-action-meta--blue {
+  color: var(--blue);
+}
+
+.welcome-action-arrow {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: #94a3b8;
+}
+
+.welcome-action-arrow--blue {
+  color: var(--blue);
+}
+
+/* Footer */
+.welcome-footer {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.welcome-security-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #eef2f9;
+  border: 1px solid var(--border);
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.welcome-compliance {
+  margin: 0;
+  font-size: 11.5px;
+  color: #94a3b8;
+}
