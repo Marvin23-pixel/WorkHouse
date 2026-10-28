@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Welcome from "./Pages/Welcome";
+import CreateOrg from "./Pages/CreateOrg";
 import Login from "./Pages/Login";
 import InputEmail from "./PasswordReset/InputEmail";
 import OtpCode from "./PasswordReset/OtpCode";
@@ -23,8 +24,7 @@ function App() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   // Which screen to show before the user is signed in:
-  // "welcome" (first screen) | "login" | "forgot" (enter email)
-  // | "verify" (enter 4-digit code) | "reset" (new password)
+  // "welcome" | "create-org" | "login" | "forgot" | "verify" | "reset"
   const [authScreen, setAuthScreen] = useState("welcome");
 
   // Email entered on the forgot-password screen, reused by the code screen
@@ -56,10 +56,19 @@ function App() {
     setAuthScreen("login");
   };
 
-  // Before sign-in: Welcome, Login, or the Forgot Password flow.
+  // Before sign-in: Welcome, Create Organisation, Login, or password recovery.
   if (!isAuthenticated) {
     if (authScreen === "welcome") {
-      return <Welcome onContinue={() => setAuthScreen("login")} />;
+      return (
+        <Welcome
+          onContinue={() => setAuthScreen("login")}
+          onCreate={() => setAuthScreen("create-org")}
+        />
+      );
+    }
+
+    if (authScreen === "create-org") {
+      return <CreateOrg onBack={() => setAuthScreen("welcome")} />;
     }
 
     if (authScreen === "forgot") {

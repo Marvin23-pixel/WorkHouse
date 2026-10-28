@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  ArrowBackIosNew,
+  ArrowLeft,
   ArrowDown,
   ArrowRight,
   Building2,
@@ -10,9 +10,9 @@ import {
   ImagePlus,
   LockKeyhole,
   UserRound,
-  Verified,
+  BadgeCheck,
 } from "lucide-react";
-import "./createorg.css";
+import "../Styles/createorg.css";
 
 export default function CreateOrg({ onBack, onSubmit }) {
   const [logo, setLogo] = useState(null);
@@ -44,7 +44,7 @@ export default function CreateOrg({ onBack, onSubmit }) {
         <div className="create-org-header-inner">
           <div className="create-org-brand">
             <button className="back-button" type="button" aria-label="Go back" onClick={onBack ?? (() => window.history.back())}>
-              <ArrowBackIosNew size={18} />
+              <ArrowLeft size={18} />
             </button>
             <div className="brand-heading">
               <span className="brand-name">WorkHouse</span>
@@ -111,7 +111,7 @@ export default function CreateOrg({ onBack, onSubmit }) {
             </div>
 
             <aside className="authority-note">
-              <span className="authority-icon"><Verified size={20} /></span>
+              <span className="authority-icon"><BadgeCheck size={20} /></span>
               <div><h3>Admin Rights &amp; Authority</h3><p>The person who creates this organisation automatically becomes its Super Administrator and can configure roles, permissions, and staff settings.</p></div>
             </aside>
 
