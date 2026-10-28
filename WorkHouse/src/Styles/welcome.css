@@ -7,6 +7,8 @@
   --border: #e2e8f0;
 
   min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
   display: flex;
   justify-content: center;
   background: linear-gradient(180deg, #dfe6f5 0%, #f4f6fb 18%, #ffffff 45%);
@@ -23,8 +25,8 @@
 
 .welcome-container {
   width: 100%;
-  max-width: 440px;
-  padding: 24px 18px 32px;
+  max-width: 560px;
+  padding: 24px 16px 32px;
   display: flex;
   flex-direction: column;
 }
