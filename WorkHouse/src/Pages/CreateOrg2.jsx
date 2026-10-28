@@ -20,7 +20,7 @@ import {
   Warehouse,
   X,
 } from "lucide-react";
-import "./createorg2.css";
+import "../Styles/createorg2.css";
 
 function AppSelect({ id, label, icon: Icon, value, options, onChange }) {
   const [open, setOpen] = useState(false);
