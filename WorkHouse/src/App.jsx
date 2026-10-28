@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Welcome from "./Pages/Welcome";
 import CreateOrg from "./Pages/CreateOrg";
+import CreateOrg2 from "./Pages/CreateOrg2";
 import Login from "./Pages/Login";
 import InputEmail from "./PasswordReset/InputEmail";
 import OtpCode from "./PasswordReset/OtpCode";
@@ -29,6 +30,9 @@ function App() {
 
   // Email entered on the forgot-password screen, reused by the code screen
   const [recoveryEmail, setRecoveryEmail] = useState("");
+
+  // Organisation details collected in Step 1 and passed to Step 2
+  const [organizationData, setOrganizationData] = useState(null);
 
   // Lives here (not inside StoreInventory) so it survives navigating
   // away to other cards — it only resets on an actual page refresh.
@@ -68,7 +72,24 @@ function App() {
     }
 
     if (authScreen === "create-org") {
-      return <CreateOrg onBack={() => setAuthScreen("welcome")} />;
+      return (
+        <CreateOrg
+          onBack={() => setAuthScreen("welcome")}
+          onSubmit={async (formData) => {
+            setOrganizationData(Object.fromEntries(formData.entries()));
+            setAuthScreen("create-org-2");
+          }}
+        />
+      );
+    }
+
+    if (authScreen === "create-org-2") {
+      return (
+        <CreateOrg2
+          organizationData={organizationData}
+          onBack={() => setAuthScreen("create-org")}
+        />
+      );
     }
 
     if (authScreen === "forgot") {
