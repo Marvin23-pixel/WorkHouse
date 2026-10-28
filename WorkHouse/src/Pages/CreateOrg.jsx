@@ -12,7 +12,7 @@ import {
   UserRound,
   BadgeCheck,
 } from "lucide-react";
-import "./createorg.css";
+import "../Styles/createorg.css";
 
 export default function CreateOrg({ onBack, onSubmit }) {
   const [logo, setLogo] = useState(null);
