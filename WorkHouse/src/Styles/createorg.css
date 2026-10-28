@@ -84,7 +84,37 @@
 .form-field textarea { min-height: 86px; padding: 11px 12px; resize: vertical; }
 .input-wrap input::placeholder, .form-field textarea::placeholder { color: var(--org-soft-muted); }
 .input-wrap input:focus, .input-wrap select:focus, .form-field textarea:focus { outline: none; border-color: #7aa5f3; background: #f8faff; box-shadow: 0 0 0 3px rgb(0 74 198 / 10%); }
-.select-chevron { position: absolute; right: 12px; color: var(--org-soft-muted); pointer-events: none; }
+.industry-dropdown { position: relative; width: 100%; }
+.industry-trigger {
+  position: relative; width: 100%; min-height: 44px; padding: 0 40px 0 40px;
+  border: 1px solid #dce2ef; border-radius: 9px; display: flex; align-items: center;
+  background: #fff; color: var(--org-ink); text-align: left;
+  font: 400 14px/20px "Inter", sans-serif; cursor: pointer;
+  box-shadow: 0 2px 6px rgb(15 23 42 / 4%);
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.industry-trigger:hover, .industry-trigger.is-open { border-color: #7aa5f3; background: #f8faff; }
+.industry-trigger:focus-visible { outline: none; border-color: #7aa5f3; box-shadow: 0 0 0 3px rgb(0 74 198 / 12%); }
+.industry-trigger .field-icon { position: absolute; left: 12px; }
+.industry-placeholder { color: var(--org-soft-muted); }
+.industry-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.select-chevron { position: absolute; right: 12px; color: var(--org-soft-muted); pointer-events: none; transition: transform .18s ease; }
+.select-chevron.is-open { transform: rotate(180deg); }
+.industry-options {
+  position: absolute; z-index: 20; top: calc(100% + 7px); left: 0; right: 0;
+  padding: 6px; border: 1px solid #e2e8f0; border-radius: 12px;
+  background: #fff; box-shadow: 0 12px 28px rgb(19 27 46 / 14%);
+  animation: industry-menu-in .14s ease-out;
+}
+.industry-option {
+  width: 100%; min-height: 42px; padding: 10px 12px; border: 0; border-radius: 8px;
+  display: flex; align-items: center; background: transparent; color: var(--org-ink);
+  text-align: left; font: 500 13px/18px "Inter", sans-serif; cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.industry-option:hover, .industry-option:focus-visible { outline: none; background: #f2f5ff; color: var(--org-primary); }
+.industry-option.is-selected { background: #eff6ff; color: var(--org-primary); font-weight: 600; }
+@keyframes industry-menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
 .upload-card { padding: 14px; display: flex; flex-direction: column; gap: 13px; border-radius: 12px; background: #fff; box-shadow: 0 2px 7px rgb(15 23 42 / 5%); }
 .upload-details { display: flex; align-items: center; gap: 12px; min-width: 0; }

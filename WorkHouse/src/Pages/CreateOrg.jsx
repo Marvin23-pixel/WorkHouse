@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowDown,
@@ -12,12 +12,39 @@ import {
   UserRound,
   BadgeCheck,
 } from "lucide-react";
-import "../Styles/createorg.css";
+import "./createorg.css";
 
 export default function CreateOrg({ onBack, onSubmit }) {
   const [logo, setLogo] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [created, setCreated] = useState(false);
+  const [industry, setIndustry] = useState("");
+  const [industryOpen, setIndustryOpen] = useState(false);
+  const industryDropdownRef = useRef(null);
+
+  const industries = [
+    ["retail", "Retail & Supermarket"],
+    ["wholesale", "Wholesale & Distribution"],
+    ["logistics", "Logistics & Supply Chain"],
+    ["hospitality", "Hospitality & Food Services"],
+  ];
+
+  useEffect(() => {
+    function closeOnOutsideClick(event) {
+      if (!industryDropdownRef.current?.contains(event.target)) {
+        setIndustryOpen(false);
+      }
+    }
+    function closeOnEscape(event) {
+      if (event.key === "Escape") setIndustryOpen(false);
+    }
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
 
   function handleLogoChange(event) {
     const file = event.target.files?.[0];
@@ -27,6 +54,11 @@ export default function CreateOrg({ onBack, onSubmit }) {
   function handleSubmit(event) {
     event.preventDefault();
     if (submitting) return;
+    if (!industry) {
+      setIndustryOpen(true);
+      industryDropdownRef.current?.querySelector("button")?.focus();
+      return;
+    }
     setSubmitting(true);
     const formData = new FormData(event.currentTarget);
     if (onSubmit) {
@@ -96,13 +128,44 @@ export default function CreateOrg({ onBack, onSubmit }) {
 
             <div className="form-field">
               <label htmlFor="industrySelect">Industry / Category</label>
-              <div className="input-wrap select-wrap"><Building2 className="field-icon" size={20} /><select id="industrySelect" name="industry" defaultValue="" required>
-                <option value="" disabled>Select operating sector...</option>
-                <option value="retail">Retail &amp; Supermarket</option>
-                <option value="wholesale">Wholesale &amp; Distribution</option>
-                <option value="logistics">Logistics &amp; Supply Chain</option>
-                <option value="hospitality">Hospitality &amp; Food Services</option>
-              </select><ArrowDown className="select-chevron" size={18} /></div>
+              <div className="industry-dropdown" ref={industryDropdownRef}>
+                <input type="hidden" name="industry" value={industry} />
+                <button
+                  id="industrySelect"
+                  className={`industry-trigger${industryOpen ? " is-open" : ""}`}
+                  type="button"
+                  role="combobox"
+                  aria-haspopup="listbox"
+                  aria-expanded={industryOpen}
+                  aria-controls="industryOptions"
+                  onClick={() => setIndustryOpen((open) => !open)}
+                >
+                  <Building2 className="field-icon" size={20} />
+                  <span className={industry ? "industry-value" : "industry-placeholder"}>
+                    {industries.find(([value]) => value === industry)?.[1] ?? "Select operating sector..."}
+                  </span>
+                  <ArrowDown className={`select-chevron${industryOpen ? " is-open" : ""}`} size={18} />
+                </button>
+                {industryOpen && (
+                  <div className="industry-options" id="industryOptions" role="listbox" aria-label="Industry / Category">
+                    {industries.map(([value, label]) => (
+                      <button
+                        className={`industry-option${industry === value ? " is-selected" : ""}`}
+                        key={value}
+                        type="button"
+                        role="option"
+                        aria-selected={industry === value}
+                        onClick={() => {
+                          setIndustry(value);
+                          setIndustryOpen(false);
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="form-field">
