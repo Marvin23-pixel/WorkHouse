@@ -15,7 +15,7 @@ import {
   Unlock,
   CheckCircle2,
 } from "lucide-react";
-import "./orglookup.css";
+import "../Styles/orglookup.css";
 
 const ORGS = [
   {
