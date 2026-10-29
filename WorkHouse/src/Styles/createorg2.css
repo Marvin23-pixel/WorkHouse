@@ -81,11 +81,11 @@
 /* ---------- Cards ---------- */
 .setup-card { width: 100%; padding: 16px; border-radius: 14px; background: #fff; box-shadow: 0 2px 8px rgb(15 23 42 / 5%); }
 .preferences-card { display: flex; flex-direction: column; gap: 16px; }
-.card-heading { display: flex; align-items: center; gap: 10px; padding-bottom: 2px; }
-.card-heading > div { min-width: 0; }
+.card-heading { width: 100%; max-width: 100%; display: flex; align-items: center; gap: 10px; padding-bottom: 2px; }
+.card-heading > div { flex: 1 1 0; min-width: 0; max-width: 100%; }
 .card-heading-icon { width: 34px; height: 34px; flex: 0 0 34px; display: grid; place-items: center; border-radius: 10px; background: #d5e0f8; color: var(--setup-primary); }
 .card-heading h3, .modules-heading h3 { margin: 0; color: var(--setup-ink); font-family: "Plus Jakarta Sans", sans-serif; font-size: 16px; line-height: 21px; font-weight: 600; }
-.card-heading p, .modules-heading p { margin: 3px 0 0; color: var(--setup-muted); font-size: 11px; line-height: 16px; }
+.card-heading p, .modules-heading p { margin: 3px 0 0; color: var(--setup-muted); font-size: 11px; line-height: 16px; white-space: normal; overflow-wrap: anywhere; }
 
 /* ---------- Selects ---------- */
 .setup-field { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
