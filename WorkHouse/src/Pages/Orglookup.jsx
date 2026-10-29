@@ -179,7 +179,7 @@ export default function Orglookup({ onBack, onSelectOrg, onJoinOrg }) {
           <div className="ol-pill">
             <div className="ol-pill__left">
               <BadgeCheck size={18} className="ol-pill__icon" />
-              <span>3 connected corporate tenants</span>
+              <span>{ORGS.length} connected corporate tenants</span>
             </div>
             <span className="ol-pill__right">Single Sign-On</span>
           </div>
@@ -221,7 +221,9 @@ export default function Orglookup({ onBack, onSelectOrg, onJoinOrg }) {
                       <p className="ol-card__detail">{org.detail}</p>
                     </div>
                   </div>
-                  <ChevronRight size={20} className="ol-card__chevron" />
+                  <span className="ol-card__chevron">
+                    <ChevronRight size={18} />
+                  </span>
                 </div>
               );
             })}
@@ -261,7 +263,13 @@ export default function Orglookup({ onBack, onSelectOrg, onJoinOrg }) {
           if (e.target === e.currentTarget) closeModal();
         }}
       >
-        <div className="ol-sheet" role="dialog" aria-modal="true" aria-labelledby="ol-sheet-title">
+        <div
+          className="ol-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="ol-sheet-title"
+        >
+          <span className="ol-sheet__grab" aria-hidden="true" />
           <div className="ol-sheet__head">
             <div className="ol-sheet__head-left">
               <div className="ol-sheet__badge">
@@ -271,7 +279,9 @@ export default function Orglookup({ onBack, onSelectOrg, onJoinOrg }) {
                 <h4 id="ol-sheet-title" className="ol-sheet__title">
                   Enter Invitation Code
                 </h4>
-                <p className="ol-sheet__sub">Provided by your workspace administrator</p>
+                <p className="ol-sheet__sub">
+                  Provided by your workspace administrator
+                </p>
               </div>
             </div>
             <button
@@ -313,10 +323,18 @@ export default function Orglookup({ onBack, onSelectOrg, onJoinOrg }) {
           </div>
 
           <div className="ol-sheet__footer">
-            <button type="button" className="ol-btn ol-btn--secondary" onClick={closeModal}>
+            <button
+              type="button"
+              className="ol-btn ol-btn--secondary"
+              onClick={closeModal}
+            >
               Cancel
             </button>
-            <button type="button" className="ol-btn ol-btn--primary" onClick={handleSubmitCode}>
+            <button
+              type="button"
+              className="ol-btn ol-btn--primary"
+              onClick={handleSubmitCode}
+            >
               Verify &amp; Continue
             </button>
           </div>
