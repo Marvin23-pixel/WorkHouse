@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Welcome from "./Pages/Welcome";
+import Orglookup from "./Pages/Orglookup";
 import CreateOrg from "./Pages/CreateOrg";
 import CreateOrg2 from "./Pages/CreateOrg2";
 import Login from "./Pages/Login";
@@ -25,8 +26,12 @@ function App() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   // Which screen to show before the user is signed in:
-  // "welcome" | "create-org" | "login" | "forgot" | "verify" | "reset"
+  // "welcome" | "org-lookup" | "create-org" | "create-org-2" | "login"
+  // | "forgot" | "verify" | "reset"
   const [authScreen, setAuthScreen] = useState("welcome");
+
+  // Organisation picked on the Orglookup screen (use it later on Login)
+  const [selectedOrg, setSelectedOrg] = useState(null);
 
   // Email entered on the forgot-password screen, reused by the code screen
   const [recoveryEmail, setRecoveryEmail] = useState("");
@@ -60,13 +65,31 @@ function App() {
     setAuthScreen("login");
   };
 
-  // Before sign-in: Welcome, Create Organisation, Login, or password recovery.
+  // Before sign-in: Welcome, Org Lookup, Create Organisation, Login, or password recovery.
   if (!isAuthenticated) {
     if (authScreen === "welcome") {
       return (
         <Welcome
-          onContinue={() => setAuthScreen("login")}
+          onJoin={() => setAuthScreen("org-lookup")}
           onCreate={() => setAuthScreen("create-org")}
+        />
+      );
+    }
+
+    if (authScreen === "org-lookup") {
+      return (
+        <Orglookup
+          onBack={() => setAuthScreen("welcome")}
+          onSelectOrg={(org) => {
+            setSelectedOrg(org);
+            // Short pause so the "Connecting to..." toast is visible
+            setTimeout(() => setAuthScreen("login"), 900);
+          }}
+          onJoinOrg={(code) => {
+            // TODO: verify `code` with your API and store the organisation it returns.
+            console.log("Join with invitation code:", code);
+            setTimeout(() => setAuthScreen("login"), 900);
+          }}
         />
       );
     }
