@@ -146,7 +146,7 @@ export default function Orglookup({ onBack, onSelectOrg, onJoinOrg }) {
         <div className="ol-content">
           {/* Heading */}
           <div className="ol-heading">
-            <h2 className="ol-heading__title">Organisations you belo</h2>
+            <h2 className="ol-heading__title">Organisations you belon</h2>
             <p className="ol-heading__sub">
               Select an organisation to continue to your workspace
             </p>
