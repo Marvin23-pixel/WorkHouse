@@ -4,13 +4,12 @@ import {
   Building2,
   Plus,
   ArrowRight,
-  ChevronRight,
   KeyRound,
   ShieldCheck,
   Lock,
 } from "lucide-react";
 import heroImage from "../assets/img1.png"; // put img1.png in src/assets/
-import '../Styles/welcome.css';
+import "../Styles/welcome.css";
 
 function Welcome({ onJoin, onCreate, onContinue }) {
   const handleJoin = () => (onJoin || onContinue)?.();
@@ -38,6 +37,7 @@ function Welcome({ onJoin, onCreate, onContinue }) {
             alt="Team collaborating around a table"
             className="welcome-hero-img"
           />
+          <div className="welcome-hero-shade" />
           <div className="welcome-hero-caption">
             <span className="welcome-hero-caption-icon">
               <Users size={16} />
@@ -48,7 +48,11 @@ function Welcome({ onJoin, onCreate, onContinue }) {
 
         {/* Action cards */}
         <div className="welcome-actions">
-          <button type="button" className="welcome-action" onClick={handleJoin}>
+          <button
+            type="button"
+            className="welcome-action welcome-action--primary"
+            onClick={handleJoin}
+          >
             <span className="welcome-action-icon welcome-action-icon--primary">
               <Building2 size={26} />
             </span>
@@ -62,7 +66,9 @@ function Welcome({ onJoin, onCreate, onContinue }) {
                 SSO or Workspace Token
               </span>
             </span>
-            <ArrowRight size={22} className="welcome-action-arrow welcome-action-arrow--blue" />
+            <span className="welcome-action-arrow welcome-action-arrow--blue">
+              <ArrowRight size={18} />
+            </span>
           </button>
 
           <button type="button" className="welcome-action" onClick={handleCreate}>
@@ -80,7 +86,9 @@ function Welcome({ onJoin, onCreate, onContinue }) {
                 Admin privileges &amp; 30-day trial
               </span>
             </span>
-            <ChevronRight size={22} className="welcome-action-arrow" />
+            <span className="welcome-action-arrow">
+              <ArrowRight size={18} />
+            </span>
           </button>
         </div>
 
