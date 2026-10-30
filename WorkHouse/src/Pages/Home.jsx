@@ -40,6 +40,7 @@ function Home({ onNavigate, isChatbotOpen, onOpenChatbot, onCloseChatbot }) {
               style={{
                 width: 48,
                 height: 48,
+                flexShrink: 0,
                 borderRadius: "50%",
                 display: "inline-flex",
                 alignItems: "center",
@@ -88,7 +89,7 @@ function Home({ onNavigate, isChatbotOpen, onOpenChatbot, onCloseChatbot }) {
               <span className="notification-dot" />
             </button>
             <div className="online-indicator" />
-          </div>  
+          </div>
         </div>
       </header>
 
