@@ -16,9 +16,9 @@ import { getStaff } from '../utils/staffStore.js';
 
 function StatusPill({ tone, pulse, children }) {
   return (
-    <div className={`status-pill status-pill-${tone}`}>
-      <span className={`status-dot ${pulse ? 'status-dot-pulse' : ''}`} aria-hidden="true" />
-      <span>{children}</span>
+    <div className={`ad-pill ad-pill--${tone}`}>
+      <span className={`ad-dot${pulse ? ' ad-dot--pulse' : ''}`} aria-hidden="true" />
+      <span className="ad-pill__text">{children}</span>
     </div>
   );
 }
@@ -62,8 +62,8 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
       status: (
         <>
           <strong>{inventoryCounts.skuCount.toLocaleString('en-NG')} Active SKUs</strong>
-          <span className="status-separator">•</span>
-          <strong className="status-danger">
+          <span className="ad-sep">•</span>
+          <strong className="ad-text-danger">
             {inventoryCounts.restockAlerts} Restock Alert{inventoryCounts.restockAlerts === 1 ? '' : 's'}
           </strong>
         </>
@@ -81,8 +81,8 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
       status: (
         <>
           <strong>4 Roles Configured</strong>
-          <span className="status-separator">•</span>
-          <strong className="status-success-text">Audit Guard Active</strong>
+          <span className="ad-sep">•</span>
+          <strong className="ad-text-success">Audit Guard Active</strong>
         </>
       ),
       ariaLabel: 'Manage Access Permissions',
@@ -99,8 +99,8 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
       status: (
         <>
           <strong>{staffCounts.listed} Personnel Listed</strong>
-          <span className="status-separator">•</span>
-          <strong className="status-primary-text">{staffCounts.onlineNow} Online Now</strong>
+          <span className="ad-sep">•</span>
+          <strong className="ad-text-primary">{staffCounts.onlineNow} Online Now</strong>
         </>
       ),
       ariaLabel: 'Manage Staff Directory',
@@ -131,11 +131,15 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
     },
   ];
 
+  // Cards fade in once, the first time they scroll into view.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          entry.target.classList.toggle('is-visible', entry.isIntersecting);
+          if (entry.isIntersecting) {
+            entry.target.classList.add('ad-visible');
+            observer.unobserve(entry.target);
+          }
         });
       },
       { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
@@ -155,39 +159,25 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
 
   return (
     <div className="admin-dashboard">
-      <header className="admin-header">
-        <div className="admin-header-inner">
-          <div className="admin-header-left">
+      <header className="ad-header">
+        <div className="ad-header-inner">
+          <div className="ad-header-left">
             <button
-              className="icon-button"
+              className="ad-icon-btn"
               type="button"
               aria-label="Go back"
               onClick={onBack ?? (() => window.history.back())}
             >
               <ArrowLeft size={20} strokeWidth={2.2} />
             </button>
-            <span className="brand-name"></span>
-            {/* <span className="header-divider" aria-hidden="true" /> */}
-            <span className="page-title">Admin Dashboard</span>
+            <span className="ad-page-title">Admin Dashboard</span>
           </div>
 
           <button
-            className="notification-button chatbot-circle-button"
+            className="ad-chat-btn"
             type="button"
             onClick={() => setIsChatbotOpen(true)}
             aria-label="Open Chatbot Assistant"
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#EEF3F8",
-              border: "1px solid #D7E1EC",
-              boxShadow: "0 4px 12px rgba(34, 55, 82, 0.12)",
-              position: "relative",
-            }}
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <defs>
@@ -224,32 +214,24 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
               <path d="M19.7 14.8v2.15c0 1.05-.85 1.9-1.9 1.9h-1.1" stroke="#8296B2" strokeWidth="0.9" strokeLinecap="round" />
               <rect x="15.5" y="18.1" width="2.3" height="1.15" rx="0.57" fill="#7186A3" />
             </svg>
-            <span className="notification-dot" aria-hidden="true" />
+            <span className="ad-chat-dot" aria-hidden="true" />
           </button>
         </div>
       </header>
 
-      <main className="admin-main">
-        <div className="admin-content">
-          <section className="dashboard-intro" aria-labelledby="dashboard-heading">
-            <div>
-              {/* <p className="eyebrow">Enterprise control center</p> */}
-              {/* <h1 id="dashboard-heading">Admin Dashboard</h1> */}
-              {/* <p className="intro-copy">Manage your connected retail operations from one secure workspace.</p> */}
-            </div>
-          </section>
-
-          <div className="section-heading">
+      <main className="ad-main">
+        <div className="ad-content">
+          <div className="ad-section-heading">
             <span>Management Modules</span>
-            <span className="module-count">5 Integrated Systems</span>
+            <span className="ad-module-count">{modules.length} Integrated Systems</span>
           </div>
 
-          <section className="module-list" aria-label="Management modules">
+          <section className="ad-list" aria-label="Management modules">
             {modules.map((module, index) => {
               const Icon = module.icon;
               return (
                 <article
-                  className="module-card reveal-item"
+                  className="ad-card"
                   key={module.id}
                   ref={(element) => {
                     revealRefs.current[index] = element;
@@ -260,27 +242,27 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
                   onClick={() => onNavigate?.(module.id)}
                   onKeyDown={(event) => handleModuleKeyDown(event, module.id)}
                 >
-                  <div className="module-card-main">
-                    <div className={`module-icon ${module.iconAlert ? 'has-alert' : ''}`}>
+                  <div className="ad-card-main">
+                    <div className={`ad-icon${module.iconAlert ? ' ad-icon--alert' : ''}`}>
                       <Icon size={26} strokeWidth={1.9} />
-                      {module.iconAlert && <span className="module-alert-dot" aria-hidden="true" />}
+                      {module.iconAlert && <span className="ad-alert-dot" aria-hidden="true" />}
                     </div>
 
-                    <div className="module-copy">
-                      <div className="module-eyebrow-row">
-                        <span className="module-eyebrow">{module.eyebrow}</span>
-                        {module.badge && <span className="new-badge">{module.badge}</span>}
+                    <div className="ad-copy">
+                      <div className="ad-eyebrow-row">
+                        <span className="ad-eyebrow">{module.eyebrow}</span>
+                        {module.badge && <span className="ad-new-badge">{module.badge}</span>}
                       </div>
                       <h2>{module.title}</h2>
                       <p>{module.description}</p>
                     </div>
 
-                    <span className="module-arrow" aria-hidden="true">
+                    <span className="ad-arrow" aria-hidden="true">
                       <ChevronRight size={18} strokeWidth={2.2} />
                     </span>
                   </div>
 
-                  <div className="module-card-footer">
+                  <div className="ad-card-footer">
                     <StatusPill tone={module.statusTone} pulse={module.pulse}>
                       {module.status}
                     </StatusPill>
@@ -290,8 +272,8 @@ export default function AdminDashboard({ onBack, onNavigate, products = [] }) {
             })}
           </section>
 
-          <footer className="security-footnote">
-            <div className="security-label">
+          <footer className="ad-foot">
+            <div className="ad-foot-label">
               <LockKeyhole size={15} strokeWidth={2} />
               <span>Restricted Administrative Access</span>
             </div>
