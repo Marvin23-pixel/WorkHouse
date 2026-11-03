@@ -120,7 +120,7 @@ function Home({ onNavigate, isChatbotOpen, onOpenChatbot, onCloseChatbot }) {
           <div className="quick-actions">
             <button className="quick-action"><ScanBarcode size={18} /><span>Remaining Advanced</span></button>
             <button className="quick-action"><Search size={18} /><span>Quick Price Check</span></button>
-            <button className="quick-action" onClick={() => onNavigate("inventory")}><FileText size={18} /><span>Stock Inventory</span></button>
+            <button className="quick-action"><FileText size={18} /><span>Stock Inventory</span></button>
           </div>
 
           <section className="transactions-section">
