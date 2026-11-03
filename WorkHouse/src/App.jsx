@@ -25,6 +25,15 @@ function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
+  // Remembers which page the user came from, so the Inventory
+  // back button can return to Home or Admin correctly.
+  const [previousPage, setPreviousPage] = useState("home");
+
+  const navigate = (page) => {
+    setPreviousPage(currentPage);
+    setCurrentPage(page);
+  };
+
   // Which screen to show before the user is signed in:
   // "welcome" | "org-lookup" | "create-org" | "create-org-2" | "login"
   // | "forgot" | "verify" | "reset"
@@ -48,6 +57,7 @@ function App() {
     setCurrentStaff(loginData.staff);
     setIsAuthenticated(true);
     setCurrentPage("home");
+    setPreviousPage("home");
     setAuthScreen("login");
   };
 
@@ -62,6 +72,7 @@ function App() {
     setIsAuthenticated(false);
     setCurrentStaff(null);
     setCurrentPage("home");
+    setPreviousPage("home");
     setAuthScreen("login");
   };
 
@@ -203,7 +214,7 @@ function App() {
   if (currentPage === "admin") {
     return (
       <AdminDashboard
-        onNavigate={setCurrentPage}
+        onNavigate={navigate}
         onBack={() => setCurrentPage("home")}
         products={products}
       />
@@ -213,7 +224,7 @@ function App() {
   if (currentPage === "inventory") {
     return (
       <StoreInventory
-        onBack={() => setCurrentPage("admin")}
+        onBack={() => setCurrentPage(previousPage === "home" ? "home" : "admin")}
         products={products}
         setProducts={setProducts}
       />
@@ -238,7 +249,7 @@ function App() {
 
   return (
     <Home
-      onNavigate={setCurrentPage}
+      onNavigate={navigate}
       isChatbotOpen={isChatbotOpen}
       onOpenChatbot={() => setIsChatbotOpen(true)}
       onCloseChatbot={() => setIsChatbotOpen(false)}
