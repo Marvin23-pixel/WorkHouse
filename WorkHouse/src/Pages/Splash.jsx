@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import logo from "../assets/Logo.png"; // change this path to wherever Logo.png lives
-import "./splash.css";
+import "../Styles/splash.css";
 
 // Total time the splash stays on screen before it hands over to the next page
 const SHOW_FOR = 5200; // ms
