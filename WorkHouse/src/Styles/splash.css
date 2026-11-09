@@ -166,6 +166,23 @@
   }
 }
 
+/* ---------- Laptop / desktop: centred column, same as the Home page ---------- */
+
+@media (min-width: 768px) {
+  .splash {
+    background: #ffffff;
+  }
+
+  .splash__content {
+    width: 100%;
+    max-width: 850px;
+    height: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    background: #0b2559;
+  }
+}
+
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
