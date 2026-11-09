@@ -14,24 +14,30 @@
 
 
 /* =========================================================
-   HEADER  (matches the Staff Profile header exactly)
+   HEADER  (same structure as the Records header)
+   Side padding lives on the outer fixed header, which is
+   full width and border-box, so nothing can slip off-screen.
 ========================================================= */
 
 .home-header {
   position: fixed;
-  inset: 0 0 auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
   z-index: 100;
   background: rgba(250, 248, 255, 0.9);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  padding: 12px 16px;
 }
 
 .header-content {
-  height: 64px;
+  height: 48px;
   max-width: 700px;
   margin: 0 auto;
-  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,7 +46,7 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -64,6 +70,8 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-actions {
@@ -117,7 +125,7 @@
 .home-main {
   width: 100%;
   min-height: 100vh;
-  padding: 80px 16px 112px;
+  padding: 88px 16px 112px;
   box-sizing: border-box;
 }
 
@@ -792,13 +800,6 @@
    RESPONSIVE
 ========================================================= */
 
-@media (min-width: 701px) {
-  .header-content {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
 @media (min-width: 768px) {
 
   .home-main {
@@ -810,6 +811,7 @@
     max-width: 850px;
   }
 
+  .header-content,
   .bottom-nav-inner {
     max-width: 850px;
   }
