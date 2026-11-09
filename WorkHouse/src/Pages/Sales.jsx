@@ -6,7 +6,7 @@ import {
   ShoppingBag,
   CheckCircle
 } from 'lucide-react';
-import "../assets/Logo.png";
+import Logo from "../assets/Logo.png";
 import '../Styles/sales.css';
 
 export default function Sales({ onNavigate }) {
@@ -44,19 +44,16 @@ export default function Sales({ onNavigate }) {
               className="sales-back-btn"
               onClick={() => onNavigate ? onNavigate("home") : window.history.back()}
               type="button"
+              aria-label="Go back"
             >
               <ArrowLeft size={20} />
             </button>
-            <img
-              alt="Digisol Logo"
-              className="sales-logo"
-              src="{Logo}"
-            />
+            <img className="sales-logo" src={Logo} alt="Digisol logo" />
             <div className="sales-title-group">
-              <h1>Record Sale</h1>
+              <span>Record Sale</span>
             </div>
           </div>
-          <button className="sales-notif-btn" type="button">
+          <button className="sales-notif-btn" type="button" aria-label="Notifications">
             <Bell size={20} />
             <span className="sales-notif-dot" />
           </button>
@@ -66,7 +63,7 @@ export default function Sales({ onNavigate }) {
       {/* Main Form Content */}
       <main className="sales-main">
         <div className="sales-wrapper">
-          
+
           {/* Status Bar */}
           <div className="sales-statusbar card">
             <div className="sales-status-info">
@@ -119,7 +116,7 @@ export default function Sales({ onNavigate }) {
                   <span>Active Line Item</span>
                   <span className="badge-success">In Stock</span>
                 </div>
-                
+
                 <div className="item-row">
                   <div className="item-icon-box">
                     <ShoppingBag size={20} />
@@ -209,7 +206,7 @@ export default function Sales({ onNavigate }) {
                   <span>Active Line Item</span>
                   <span className="badge-success">In Stock</span>
                 </div>
-                
+
                 <div className="item-row">
                   <div className="item-icon-box">
                     <ShoppingBag size={20} />
@@ -291,7 +288,7 @@ export default function Sales({ onNavigate }) {
                   <label>Amount Paid Now *</label>
                   {/* <span className="min-deposit-label">Min 20%: ₦{minDeposit.toLocaleString()}</span> */}
                 </div>
-                
+
                 <div className="deposit-input-container">
                   <span className="deposit-symbol">₦</span>
                   <input
@@ -301,7 +298,7 @@ export default function Sales({ onNavigate }) {
                   />
                 </div>
 
-                {/* Payment Method (replaced Quick Select Preset) */}
+                {/* Payment Method */}
                 <div className="payment-method-card" style={{ marginTop: '0.75rem' }}>
                   <label>Payment Method</label>
                   <div className="payment-options-grid">
@@ -357,7 +354,7 @@ export default function Sales({ onNavigate }) {
                 </div>
                 <h3>Sale Recorded Successfully!</h3>
                 <p>Receipt <strong>#TRX-8822</strong> has been logged to the cloud ledger.</p>
-                
+
                 <div className="modal-actions">
                   <button
                     className="modal-btn-secondary"

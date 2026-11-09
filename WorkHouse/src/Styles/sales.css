@@ -19,21 +19,26 @@ body {
   background-color: #f8fafc;
 }
 
-/* Header */
+/* Header (matches Home header) */
 .sales-header {
   position: fixed;
-  top: 0;
   left: 0;
+  right: 0;
+  top: 0;
   width: 100%;
-  z-index: 50;
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid #e2e8f0;
+  box-sizing: border-box;
+  z-index: 100;
+  background: rgba(250, 248, 255, 0.9);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  padding: 12px 16px;
 }
 
 .sales-header-content {
-  height: 64px;
-  padding: 0 1rem;
+  height: 48px;
+  max-width: 700px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -42,66 +47,89 @@ body {
 .sales-header-left {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 10px;
+  min-width: 0;
 }
 
 .sales-back-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: #f1f5f9;
-  color: #0f172a;
-  border: none;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f3ff;
+  color: #000;
   cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sales-back-btn:active {
+  transform: scale(0.94);
 }
 
 .sales-logo {
-  height: 28px;
-  width: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   object-fit: contain;
-  margin-left: 0.25rem;
+  display: block;
+  flex-shrink: 0;
 }
 
-.sales-title-group h1 {
-  font-size: 1.125rem;
+.sales-title-group {
+  min-width: 0;
+}
+
+.sales-title-group span {
+  display: block;
+  color: #004ac6;
+  font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
-  line-height: 1.2;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sales-notif-btn {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: #f1f5f9;
-  border: none;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f3ff;
+  color: #000;
   cursor: pointer;
-  color: #0f172a;
+  transition: 0.2s ease;
+}
+
+.sales-notif-btn:active {
+  transform: scale(0.94);
 }
 
 .sales-notif-dot {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  background: #ef4444;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  background: #dd3333;
   border-radius: 50%;
-  border: 2px solid #ffffff;
+  border: 2px solid #faf8ff;
 }
 
 /* Main Area */
 .sales-main {
   flex: 1;
   width: 100%;
-  padding-top: 80px;
+  padding-top: 88px;
   padding-bottom: 2rem;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -415,7 +443,7 @@ body {
   text-transform: capitalize;
   cursor: pointer;
   transition: all 0.2s;
-  color: #334155; /* Fixed: text is now always visible */
+  color: #334155;
 }
 
 .payment-option-btn.active {
@@ -599,7 +627,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 200;
   background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
