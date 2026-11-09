@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Splash from "./Splash";
+import Splash from "./Pages/Splash";
 import Welcome from "./Pages/Welcome";
 import Orglookup from "./Pages/Orglookup";
 import CreateOrg from "./Pages/CreateOrg";
