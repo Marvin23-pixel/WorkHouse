@@ -394,7 +394,7 @@ export default function StaffAccounts({ onBack }) {
                     id="pin"
                     name="pin"
                     type={showPin ? "text" : "password"}
-                    maxLength={15}
+                    maxLength={20}
                     placeholder="••••"
                     value={form.pin}
                     onChange={handleFormChange}
