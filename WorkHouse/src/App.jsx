@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Splash from "./Splash";
 import Welcome from "./Pages/Welcome";
 import Orglookup from "./Pages/Orglookup";
 import CreateOrg from "./Pages/CreateOrg";
@@ -20,6 +21,10 @@ import Settings from "./Adminfunctions/Settings";
 import { logStaffOut } from "./utils/staffStore.js";
 
 function App() {
+  // The splash screen is the very first thing shown when the app opens.
+  // It only runs once per page load, then hands over to the Welcome screen.
+  const [showSplash, setShowSplash] = useState(true);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentStaff, setCurrentStaff] = useState(null);
   const [currentPage, setCurrentPage] = useState("home");
@@ -75,6 +80,11 @@ function App() {
     setPreviousPage("home");
     setAuthScreen("login");
   };
+
+  // First screen: the splash. Once it finishes, the app carries on as before.
+  if (showSplash) {
+    return <Splash onFinish={() => setShowSplash(false)} />;
+  }
 
   // Before sign-in: Welcome, Org Lookup, Create Organisation, Login, or password recovery.
   if (!isAuthenticated) {
