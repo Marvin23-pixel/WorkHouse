@@ -576,6 +576,38 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 
+/* PIN show/hide eye */
+.staff-page .staff-pin-wrap {
+  position: relative;
+}
+
+.staff-page .staff-pin-wrap input {
+  padding-right: 2.5rem;
+}
+
+.staff-page .staff-pin-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.staff-page .staff-pin-toggle:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
 .staff-page .staff-modal-actions {
   padding-top: 0.5rem;
   display: flex;

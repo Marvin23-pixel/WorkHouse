@@ -7,6 +7,8 @@ import {
   X,
   Check,
   Users,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import "../Styles/staffaccounts.css";
 import { getStaff, saveStaff } from "../utils/staffStore.js";
@@ -28,6 +30,7 @@ export default function StaffAccounts({ onBack }) {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showPin, setShowPin] = useState(false);
 
   const [form, setForm] = useState({
     role: "sales",
@@ -94,6 +97,7 @@ export default function StaffAccounts({ onBack }) {
       email: "",
       pin: "",
     });
+    setShowPin(false);
     setIsModalOpen(true);
   };
 
@@ -385,16 +389,26 @@ export default function StaffAccounts({ onBack }) {
 
               <div className="staff-form-group">
                 <label htmlFor="pin">Initial PIN / Access Code</label>
-                <input
-                  id="pin"
-                  name="pin"
-                  type="password"
-                  maxLength={8}
-                  placeholder="••••"
-                  value={form.pin}
-                  onChange={handleFormChange}
-                  required
-                />
+                <div className="staff-pin-wrap">
+                  <input
+                    id="pin"
+                    name="pin"
+                    type={showPin ? "text" : "password"}
+                    maxLength={8}
+                    placeholder="••••"
+                    value={form.pin}
+                    onChange={handleFormChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="staff-pin-toggle"
+                    onClick={() => setShowPin((prev) => !prev)}
+                    aria-label={showPin ? "Hide PIN" : "Show PIN"}
+                  >
+                    {showPin ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
 
               <div className="staff-modal-actions">
