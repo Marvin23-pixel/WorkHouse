@@ -31,7 +31,7 @@ function Splash({ onFinish }) {
           </span>
         </div>
 
-        <p className="splash__tagline">Enterprise Management Portl</p>
+        <p className="splash__tagline">Enterprise Management Portal</p>
 
         <div className="splash__loader" role="status" aria-live="polite">
           <div className="splash__track">
