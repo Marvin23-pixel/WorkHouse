@@ -312,7 +312,7 @@ export default function Notifications({ onBack }) {
           </span>
         </div>
         <p className="notif-version">
-          DIGISOI POS AUDIT ENGINE • v2.4.8-pos
+          DIGISOL POS AUDIT ENGINE • v2.4.8-pos
         </p>
       </footer>
     </div>
