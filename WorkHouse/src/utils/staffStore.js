@@ -1,5 +1,3 @@
-import { startTransition } from "react";
-
 // Shared staff directory — used by both StaffAccounts and Login
 const STORAGE_KEY = "digisol_staff_directory";
 
@@ -82,7 +80,20 @@ const DEFAULT_STAFF = [
 export function getStaff() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      if (Array.isArray(saved)) {
+        // Make sure every default/demo account exists in the saved list,
+        // so changes to DEFAULT_STAFF are never hidden by an old cache.
+        const savedIds = new Set(saved.map((s) => s.id));
+        const missing = DEFAULT_STAFF.filter((d) => !savedIds.has(d.id));
+        if (missing.length === 0) return saved;
+
+        const merged = [...saved, ...missing];
+        saveStaff(merged);
+        return merged;
+      }
+    }
   } catch (e) {
     console.error("Failed to read staff directory", e);
   }
@@ -134,5 +145,3 @@ export function logStaffOut(staffId) {
   saveStaff(updated);
   return updated;
 }
-
- 
