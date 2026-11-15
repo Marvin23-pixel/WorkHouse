@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import logo from "../assets/Logo.png"; // change this path to wherever Logo.png lives
 import "../Styles/splash.css";
 
@@ -11,11 +11,27 @@ const DOTS = [0, 1, 2, 3, 4];
 function Splash({ onFinish }) {
   const [leaving, setLeaving] = useState(false);
   const onFinishRef = useRef(onFinish);
+  const lockupRef = useRef(null);
+  const wordmarkRef = useRef(null);
 
   // Always call the latest onFinish without restarting the timers
   useEffect(() => {
     onFinishRef.current = onFinish;
   }, [onFinish]);
+
+  // The logo starts centred, so it has to start shifted right by half the
+  // wordmark's width, then slide back to 0 on its own.
+  useLayoutEffect(() => {
+    const setShift = () => {
+      if (!lockupRef.current || !wordmarkRef.current) return;
+      const shift = wordmarkRef.current.offsetWidth / 2;
+      lockupRef.current.style.setProperty("--shift", `${shift}px`);
+    };
+
+    setShift();
+    window.addEventListener("resize", setShift);
+    return () => window.removeEventListener("resize", setShift);
+  }, []);
 
   useEffect(() => {
     const startLeaving = setTimeout(() => setLeaving(true), SHOW_FOR - FADE_OUT);
@@ -33,9 +49,9 @@ function Splash({ onFinish }) {
       style={{ "--fade-out": `${FADE_OUT}ms` }}
     >
       <div className="splash__content">
-        <div className="splash__lockup">
+        <div className="splash__lockup" ref={lockupRef}>
           <img className="splash__logo" src={logo} alt="Workhouse logo" />
-          <span className="splash__wordmark">
+          <span className="splash__wordmark" ref={wordmarkRef}>
             <span className="splash__name">WORKHOUSE</span>
           </span>
         </div>
