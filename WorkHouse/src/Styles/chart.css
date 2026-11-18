@@ -1,0 +1,414 @@
+/* =========================================================
+   CHART PAGE
+   Every class is prefixed with "chart-" so nothing clashes
+   with home.css or your other pages.
+   The page is exactly one screen tall: nothing scrolls.
+========================================================= */
+
+.chart-page {
+  height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 72px 16px 16px;
+  background: #f8f8f4;
+  color: #131b2e;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.chart-header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 100;
+  background: rgba(250, 248, 255, 0.9);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  padding: 12px 16px;
+}
+
+.chart-header-content {
+  height: 48px;
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chart-back-button {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f3ff;
+  color: #131b2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.chart-back-button:active {
+  transform: scale(0.94);
+}
+
+.chart-header-title span {
+  color: #004ac6;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+
+/* =========================================================
+   MAIN COLUMN
+========================================================= */
+
+.chart-main {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.chart-summary {
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.65);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.chart-summary-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chart-summary-label {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.chart-summary-value {
+  margin-top: 2px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+}
+
+.chart-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.chart-pill.up {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.chart-pill.down {
+  background: #fef2f2;
+  color: #dd3333;
+}
+
+.chart-compare-row {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(242, 243, 255, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #475569;
+  font-size: 11px;
+}
+
+.chart-compare-row strong {
+  color: #131b2e;
+}
+
+
+/* =========================================================
+   RANGE SWITCH
+========================================================= */
+
+.chart-ranges {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+}
+
+.chart-range {
+  flex: 1;
+  border: 1px solid rgba(226, 232, 240, 0.75);
+  border-radius: 999px;
+  padding: 9px 0;
+  background: #ffffff;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.chart-range.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.chart-range:focus-visible,
+.chart-back-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   CHART
+   The card takes all the leftover height, and the plot
+   inside it is measured so the SVG fits it exactly.
+========================================================= */
+
+.chart-card {
+  flex: 1;
+  min-height: 160px;
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.65);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+}
+
+.chart-plot {
+  position: absolute;
+  inset: 0;
+}
+
+.chart-svg {
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.chart-svg:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+  border-radius: 12px;
+}
+
+.chart-grid {
+  stroke: #e8ecf3;
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.chart-axis-text {
+  fill: #94a3b8;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.chart-axis-text.active {
+  fill: #004ac6;
+  font-weight: 700;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-guide {
+  stroke: #2563eb;
+  stroke-opacity: 0.35;
+  stroke-width: 1;
+}
+
+.chart-dot {
+  fill: #ffffff;
+  stroke: #2563eb;
+  stroke-width: 2;
+}
+
+.chart-dot.active {
+  fill: #2563eb;
+  stroke: #ffffff;
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.45));
+}
+
+.chart-arrow path {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-arrow.up path {
+  stroke: #10b981;
+}
+
+.chart-arrow.down path {
+  stroke: #dd3333;
+}
+
+.chart-arrow:not(.active) {
+  opacity: 0.75;
+}
+
+.chart-tooltip {
+  position: absolute;
+  transform: translateX(-50%);
+  min-width: 112px;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #131b2e;
+  color: #ffffff;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 6px 16px rgba(19, 27, 46, 0.25);
+  transition: left 0.12s ease-out;
+}
+
+.chart-tooltip-date {
+  display: block;
+  color: #b8c3d9;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.chart-tooltip strong {
+  display: block;
+  margin-top: 1px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.chart-stats {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.chart-stat {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.65);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.chart-stat span {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.chart-stat strong {
+  display: block;
+  margin-top: 2px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.chart-stat small {
+  display: block;
+  margin-top: 1px;
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (min-width: 768px) {
+  .chart-page {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .chart-main,
+  .chart-header-content {
+    max-width: 850px;
+  }
+}
+
+@media (max-height: 640px) {
+  .chart-summary-value {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .chart-compare-row {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-tooltip,
+  .chart-range,
+  .chart-back-button {
+    transition-duration: 0.01ms !important;
+  }
+}
