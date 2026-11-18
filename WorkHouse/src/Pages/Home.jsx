@@ -112,7 +112,22 @@ function Home({ onNavigate, isChatbotOpen, onOpenChatbot, onCloseChatbot }) {
           </button>
 
           <section className="metrics-grid">
-            <div className="metric-card total-sales-card"><div className="metric-top"><div><span className="metric-label">Today's Total Sales</span><div className="total-sales-value">₦482,500</div></div><div className="growth-pill"><TrendingUp size={14} /><span>+14.2%</span></div></div><div className="yesterday-row"><span>vs. Yesterday shift</span><strong>₦422,300</strong></div></div>
+            <div
+              className="metric-card total-sales-card"
+              role="button"
+              tabIndex={0}
+              aria-label="Open sales chart"
+              onClick={() => onNavigate("chart")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onNavigate("chart");
+                }
+              }}
+            >
+              <div className="metric-top"><div><span className="metric-label">Today's Total Sales</span><div className="total-sales-value">₦482,500</div></div><div className="growth-pill"><TrendingUp size={14} /><span>+14.2%</span></div></div>
+              <div className="yesterday-row"><span>vs. Yesterday shift</span><strong>₦422,300</strong></div>
+            </div>
             <div className="metric-card"><div className="metric-card-header"><span>Transactions</span><div className="metric-icon blue"><Receipt size={18} /></div></div><div className="metric-number">38</div><span className="metric-description">Orders completed</span></div>
             <div className="metric-card"><div className="metric-card-header"><span>Avg Ticket</span><div className="metric-icon purple"><BarChart3 size={18} /></div></div><div className="metric-number">₦12,700</div><span className="metric-description">Per receipt value</span></div>
           </section>
