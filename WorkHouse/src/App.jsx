@@ -9,6 +9,7 @@ import InputEmail from "./PasswordReset/InputEmail";
 import OtpCode from "./PasswordReset/OtpCode";
 import Reset from "./PasswordReset/Reset";
 import Home from "./Pages/Home";
+import Chart from "./Pages/Chart";
 import Sales from "./Pages/Sales";
 import Records from "./Pages/Records";
 import Profile from "./Pages/Profile";
@@ -201,6 +202,10 @@ function App() {
         onForgotPassword={() => setAuthScreen("forgot")}
       />
     );
+  }
+
+  if (currentPage === "chart") {
+    return <Chart onNavigate={setCurrentPage} />;
   }
 
   if (currentPage === "sales") {
