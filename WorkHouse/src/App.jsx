@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Splash2 from "./Pages/Splash2";
 import Splash from "./Pages/Splash";
 import Welcome from "./Pages/Welcome";
 import Orglookup from "./Pages/Orglookup";
@@ -22,8 +23,10 @@ import Settings from "./Adminfunctions/Settings";
 import { logStaffOut } from "./utils/staffStore.js";
 
 function App() {
-  // The splash screen is the very first thing shown when the app opens.
-  // It only runs once per page load, then hands over to the Welcome screen.
+  // Splash2 is the very first thing shown when the app opens.
+  // When it finishes, the original Splash follows, then the Welcome screen.
+  // Both only run once per page load.
+  const [showSplash2, setShowSplash2] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -82,7 +85,12 @@ function App() {
     setAuthScreen("login");
   };
 
-  // First screen: the splash. Once it finishes, the app carries on as before.
+  // First screen: Splash2. When it finishes, the original Splash follows.
+  if (showSplash2) {
+    return <Splash2 onFinish={() => setShowSplash2(false)} />;
+  }
+
+  // Second screen: the original splash. Once it finishes, the app carries on as before.
   if (showSplash) {
     return <Splash onFinish={() => setShowSplash(false)} />;
   }
