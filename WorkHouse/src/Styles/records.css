@@ -54,7 +54,7 @@
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color:black;
+  color: black;
 }
 
 /* Chatbot button intentionally matches the Home page exactly. */
@@ -590,12 +590,13 @@
   margin: 0 0 4px;
   font-size: 16px;
   font-weight: 700;
+  color: #000000;
 }
 
 .receipt-store-header p {
   margin: 0;
   font-size: 11px;
-  color: #475569;
+  color: #000000;
 }
 
 .receipt-meta-grid {
