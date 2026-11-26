@@ -30,6 +30,12 @@ function Splash({ onFinish }) {
 
     setShift();
     window.addEventListener("resize", setShift);
+
+    // Re-measure once the font has loaded so the width is exact
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(setShift);
+    }
+
     return () => window.removeEventListener("resize", setShift);
   }, []);
 
@@ -50,7 +56,11 @@ function Splash({ onFinish }) {
     >
       <div className="splash__content">
         <div className="splash__lockup" ref={lockupRef}>
-          <img className="splash__logo" src={logo} alt="Workhouse logo" />
+          <div className="splash__logoWrap">
+            <span className="splash__ring splash__ring--pop" aria-hidden="true" />
+            <span className="splash__ring splash__ring--land" aria-hidden="true" />
+            <img className="splash__logo" src={logo} alt="Workhouse logo" />
+          </div>
           <span className="splash__wordmark" ref={wordmarkRef}>
             <span className="splash__name">WORKHOUSE</span>
           </span>
