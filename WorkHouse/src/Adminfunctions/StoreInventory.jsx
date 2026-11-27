@@ -65,7 +65,7 @@ export const INITIAL_PRODUCTS = [
   // Test product for scanning (change the price or delete it any time)
   {
     id: "SKU-60888",
-    name: "Capri-Sun",
+    name: "Cream Crackers Biscuit",
     price: 400,
     stock: 24,
     unitLabel: "units in stock",
