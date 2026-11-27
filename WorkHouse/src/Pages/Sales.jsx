@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   ArrowLeft,
   Bell,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import Logo from "../assets/Logo.png";
+import { normalizeCode } from "../Adminfunctions/StoreInventory";
 import '../Styles/sales.css';
 
 /* ---------- Instant scan beep (Web Audio, no file needed) ---------- */
@@ -163,7 +164,9 @@ function BarcodeScanner({ onDetected, onClose }) {
 }
 
 /* ---------- Sales Page ---------- */
-export default function Sales({ onNavigate }) {
+const DEFAULT_ITEM_NAME = 'Golden Penny Sugar 500g';
+
+export default function Sales({ onNavigate, products = [] }) {
   const [currentSaleMode, setCurrentSaleMode] = useState('full');
   const [currentQty, setCurrentQty] = useState(4);
   const [unitPrice, setUnitPrice] = useState(1200);
@@ -176,6 +179,35 @@ export default function Sales({ onNavigate }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [skuQuery, setSkuQuery] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+
+  // Find the inventory item that matches what was scanned or typed:
+  // 1) exact barcode number or SKU, 2) otherwise name contains the text
+  const matchedProduct = useMemo(() => {
+    const raw = skuQuery.trim();
+    if (!raw) return null;
+
+    const code = normalizeCode(raw);
+    const exact = products.find(
+      (p) =>
+        (p.barcode && normalizeCode(p.barcode) === code) ||
+        p.id.toLowerCase() === raw.toLowerCase()
+    );
+    if (exact) return exact;
+
+    if (raw.length >= 3) {
+      const q = raw.toLowerCase();
+      return products.find((p) => p.name.toLowerCase().includes(q)) || null;
+    }
+    return null;
+  }, [skuQuery, products]);
+
+  // Price follows the matched item (and updates if its inventory price changes)
+  useEffect(() => {
+    if (matchedProduct) setUnitPrice(matchedProduct.price);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchedProduct?.id, matchedProduct?.price]);
+
+  const activeItemName = matchedProduct ? matchedProduct.name : DEFAULT_ITEM_NAME;
 
   // Financial Calculations
   const subtotal = currentQty * unitPrice;
@@ -193,6 +225,25 @@ export default function Sales({ onNavigate }) {
   const handleScanDetected = (code) => {
     setSkuQuery(code);
     setIsScannerOpen(false);
+  };
+
+  // Stock badge reflects the real inventory level of the matched item
+  const renderStockBadge = () => {
+    if (!matchedProduct) return <span className="badge-success">In Stock</span>;
+    if (matchedProduct.stock === 0) {
+      return (
+        <span
+          className="badge-warning"
+          style={{ background: '#fee2e2', color: '#b91c1c' }}
+        >
+          Out of Stock
+        </span>
+      );
+    }
+    if (matchedProduct.stock <= 5) {
+      return <span className="badge-warning">Low Stock · {matchedProduct.stock} left</span>;
+    }
+    return <span className="badge-success">In Stock</span>;
   };
 
   // Shared SKU search + scan row (used in both tabs)
@@ -222,6 +273,17 @@ export default function Sales({ onNavigate }) {
           <ScanLine size={22} />
         </button>
       </div>
+
+      {skuQuery.trim() && matchedProduct && (
+        <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#16a34a' }}>
+          ✓ Item found in store inventory
+        </p>
+      )}
+      {skuQuery.trim() && !matchedProduct && (
+        <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#b45309' }}>
+          No item found for this code
+        </p>
+      )}
     </div>
   );
 
@@ -296,7 +358,7 @@ export default function Sales({ onNavigate }) {
               <div className="card item-card">
                 <div className="item-card-header">
                   <span>Active Line Item</span>
-                  <span className="badge-success">In Stock</span>
+                  {renderStockBadge()}
                 </div>
 
                 <div className="item-row">
@@ -306,7 +368,7 @@ export default function Sales({ onNavigate }) {
                   <input
                     className="item-name-input"
                     type="text"
-                    value="Golden Penny Sugar 500g"
+                    value={activeItemName}
                     readOnly
                   />
                 </div>
@@ -377,7 +439,7 @@ export default function Sales({ onNavigate }) {
               <div className="card item-card">
                 <div className="item-card-header">
                   <span>Active Line Item</span>
-                  <span className="badge-success">In Stock</span>
+                  {renderStockBadge()}
                 </div>
 
                 <div className="item-row">
@@ -387,7 +449,7 @@ export default function Sales({ onNavigate }) {
                   <input
                     className="item-name-input"
                     type="text"
-                    value="Golden Penny Sugar 500g"
+                    value={activeItemName}
                     readOnly
                   />
                 </div>

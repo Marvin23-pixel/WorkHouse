@@ -16,6 +16,7 @@ import ChatbotWindow from "../Adminfunctions/ChatbotWindow.jsx";
 // ---------------------------------------------------------------
 // Seed data — swap this for your real inventory source / API call
 // Exported so AdminDashboard.jsx can read the same list directly.
+// `barcode` is optional: the number under the barcode / QR code.
 // ---------------------------------------------------------------
 export const INITIAL_PRODUCTS = [
   {
@@ -61,6 +62,15 @@ export const INITIAL_PRODUCTS = [
     stock: 0,
     unitLabel: "units remaining",
   },
+  // Test product for scanning (change the price or delete it any time)
+  {
+    id: "SKU-60888",
+    name: "Capri-Sun",
+    price: 400,
+    stock: 24,
+    unitLabel: "units in stock",
+    barcode: "608887089158",
+  },
 ];
 
 export const LOW_STOCK_THRESHOLD = 5;
@@ -69,6 +79,15 @@ export function getStatus(stock) {
   if (stock === 0) return "out";
   if (stock <= LOW_STOCK_THRESHOLD) return "low";
   return "normal";
+}
+
+// Makes barcode comparison forgiving: trims spaces, ignores leading zeros
+// (a 12-digit UPC can be read as a 13-digit EAN) and letter case.
+export function normalizeCode(code) {
+  return String(code ?? "")
+    .trim()
+    .replace(/^0+(?=\d)/, "")
+    .toLowerCase();
 }
 
 function formatNaira(amount) {
@@ -84,6 +103,7 @@ export default function StoreInventory({ onBack, products, setProducts }) {
   const [modalName, setModalName] = useState("");
   const [modalStock, setModalStock] = useState(0);
   const [modalPrice, setModalPrice] = useState(0);
+  const [modalBarcode, setModalBarcode] = useState("");
   const [bulkText, setBulkText] = useState("");
   const [bulkDefaultStock, setBulkDefaultStock] = useState(10);
   const [toast, setToast] = useState({ visible: false, message: "" });
@@ -100,7 +120,9 @@ export default function StoreInventory({ onBack, products, setProducts }) {
     return products.filter((p) => {
       const status = getStatus(p.stock);
       const matchesSearch =
-        p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q);
+        p.name.toLowerCase().includes(q) ||
+        p.id.toLowerCase().includes(q) ||
+        (p.barcode ? p.barcode.toLowerCase().includes(q) : false);
       const matchesFilter =
         activeFilter === "all" ? true : status === activeFilter;
       return matchesSearch && matchesFilter;
@@ -126,6 +148,7 @@ export default function StoreInventory({ onBack, products, setProducts }) {
     setModalName(product.name);
     setModalStock(product.stock);
     setModalPrice(product.price);
+    setModalBarcode(product.barcode || "");
   }
 
   function closeActionModal() {
@@ -133,6 +156,7 @@ export default function StoreInventory({ onBack, products, setProducts }) {
     setIsAddMode(false);
     setSheetMode("single");
     setBulkText("");
+    setModalBarcode("");
   }
 
   function adjustModalStock(delta) {
@@ -145,6 +169,22 @@ export default function StoreInventory({ onBack, products, setProducts }) {
 
   function saveInventoryChanges() {
     const trimmedName = modalName.trim() || "Unnamed Product";
+    const trimmedBarcode = modalBarcode.trim();
+
+    // Two products must never share the same barcode number
+    if (trimmedBarcode) {
+      const clash = products.find(
+        (p) =>
+          p.barcode &&
+          normalizeCode(p.barcode) === normalizeCode(trimmedBarcode) &&
+          p.id !== activeItemId
+      );
+      if (clash) {
+        showToast(`That barcode already belongs to "${clash.name}"`);
+        return;
+      }
+    }
+
     if (isAddMode) {
       const newProduct = {
         id: generateSku(),
@@ -152,6 +192,7 @@ export default function StoreInventory({ onBack, products, setProducts }) {
         price: modalPrice,
         stock: modalStock,
         unitLabel: "units in stock",
+        barcode: trimmedBarcode,
       };
       setProducts((prev) => [newProduct, ...prev]);
       closeActionModal();
@@ -161,7 +202,13 @@ export default function StoreInventory({ onBack, products, setProducts }) {
     setProducts((prev) =>
       prev.map((p) =>
         p.id === activeItemId
-          ? { ...p, name: trimmedName, stock: modalStock, price: modalPrice }
+          ? {
+              ...p,
+              name: trimmedName,
+              stock: modalStock,
+              price: modalPrice,
+              barcode: trimmedBarcode,
+            }
           : p
       )
     );
@@ -182,6 +229,7 @@ export default function StoreInventory({ onBack, products, setProducts }) {
     setModalName("");
     setModalStock(10);
     setModalPrice(0);
+    setModalBarcode("");
     setBulkText("");
   }
 
@@ -222,6 +270,7 @@ export default function StoreInventory({ onBack, products, setProducts }) {
       price: item.price,
       stock: bulkDefaultStock,
       unitLabel: "units in stock",
+      barcode: "",
     }));
     setProducts((prev) => [...newProducts, ...prev]);
     const count = newProducts.length;
@@ -558,6 +607,22 @@ export default function StoreInventory({ onBack, products, setProducts }) {
                 value={modalName}
                 onChange={(e) => setModalName(e.target.value)}
                 placeholder="Enter product name"
+              />
+            </div>
+
+            <div className="si-field">
+              <label className="si-field-label" htmlFor="si-barcode-input">
+                Barcode / QR Number (Optional)
+              </label>
+              <input
+                id="si-barcode-input"
+                type="text"
+                inputMode="text"
+                autoComplete="off"
+                className="si-name-input"
+                value={modalBarcode}
+                onChange={(e) => setModalBarcode(e.target.value)}
+                placeholder="e.g. 608887089158"
               />
             </div>
 

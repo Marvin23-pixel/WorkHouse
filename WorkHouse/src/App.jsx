@@ -59,6 +59,7 @@ function App() {
 
   // Lives here (not inside StoreInventory) so it survives navigating
   // away to other cards — it only resets on an actual page refresh.
+  // Shared with Sales so scanned barcodes can be matched in real time.
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
 
   // Login passes { staff, rememberTerminal, isSupervisor } to onLogin
@@ -217,7 +218,7 @@ function App() {
   }
 
   if (currentPage === "sales") {
-    return <Sales onNavigate={setCurrentPage} />;
+    return <Sales onNavigate={setCurrentPage} products={products} />;
   }
 
   if (currentPage === "records") {
