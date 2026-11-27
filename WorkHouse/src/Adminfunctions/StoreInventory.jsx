@@ -57,7 +57,7 @@ export const INITIAL_PRODUCTS = [
   },
   {
     id: "SKU-20914",
-    name: "Nestle Milo Tin 500g",
+    name: "Capri_Sun Juice",
     price: 2500,
     stock: 0,
     unitLabel: "units remaining",
