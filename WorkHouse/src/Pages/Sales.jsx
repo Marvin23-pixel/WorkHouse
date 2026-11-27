@@ -1,14 +1,127 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowLeft,
   Bell,
   Search,
   ShoppingBag,
-  CheckCircle
+  CheckCircle,
+  ScanLine,
+  X,
+  CameraOff
 } from 'lucide-react';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import Logo from "../assets/Logo.png";
 import '../Styles/sales.css';
 
+/* ---------- Barcode Scanner Overlay ---------- */
+const SCANNER_REGION_ID = 'sales-scanner-region';
+
+function BarcodeScanner({ onDetected, onClose }) {
+  const [error, setError] = useState('');
+  const [starting, setStarting] = useState(true);
+  const handledRef = useRef(false);
+
+  useEffect(() => {
+    const scanner = new Html5Qrcode(SCANNER_REGION_ID, {
+      verbose: false,
+      formatsToSupport: [
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.EAN_8,
+        Html5QrcodeSupportedFormats.UPC_A,
+        Html5QrcodeSupportedFormats.UPC_E,
+        Html5QrcodeSupportedFormats.CODE_128,
+        Html5QrcodeSupportedFormats.CODE_39,
+        Html5QrcodeSupportedFormats.QR_CODE
+      ],
+      experimentalFeatures: { useBarCodeDetectorIfSupported: true }
+    });
+
+    const startPromise = scanner
+      .start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 160 }, aspectRatio: 1.0 },
+        (decodedText) => {
+          if (handledRef.current) return;
+          handledRef.current = true;
+          if (navigator.vibrate) navigator.vibrate(100);
+          onDetected(decodedText);
+        },
+        () => {} // ignore "no code found" frames
+      )
+      .then(() => setStarting(false))
+      .catch((err) => {
+        const msg = String(err || '');
+        if (/NotAllowed|Permission/i.test(msg)) {
+          setError('Camera permission was denied. Please allow camera access in your browser settings and try again.');
+        } else if (/NotFound|Requested device not found/i.test(msg)) {
+          setError('No camera was found on this device.');
+        } else {
+          setError('Unable to start the camera. Make sure no other app is using it, then try again.');
+        }
+        setStarting(false);
+      });
+
+    return () => {
+      startPromise
+        .then(() => scanner.stop())
+        .then(() => scanner.clear())
+        .catch(() => {});
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="scanner-overlay" role="dialog" aria-modal="true" aria-label="Scan barcode">
+      <div className="scanner-card">
+        <div className="scanner-header">
+          <div>
+            <h3>Scan Item</h3>
+            <p>Point your camera at the barcode</p>
+          </div>
+          <button className="scanner-close-btn" onClick={onClose} type="button" aria-label="Close scanner">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="scanner-viewport">
+          <div id={SCANNER_REGION_ID} className="scanner-region" />
+
+          {!error && (
+            <div className="scanner-frame" aria-hidden="true">
+              <span className="corner tl" />
+              <span className="corner tr" />
+              <span className="corner bl" />
+              <span className="corner br" />
+              <span className="scan-line" />
+            </div>
+          )}
+
+          {starting && !error && (
+            <div className="scanner-status">
+              <span className="scanner-spinner" />
+              <p>Starting camera...</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="scanner-status scanner-error">
+              <CameraOff size={32} />
+              <p>{error}</p>
+            </div>
+          )}
+        </div>
+
+        <p className="scanner-hint">Hold steady and keep the barcode inside the frame</p>
+
+        <button className="scanner-cancel-btn" onClick={onClose} type="button">
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Sales Page ---------- */
 export default function Sales({ onNavigate }) {
   const [currentSaleMode, setCurrentSaleMode] = useState('full');
   const [currentQty, setCurrentQty] = useState(4);
@@ -20,6 +133,8 @@ export default function Sales({ onNavigate }) {
   const [customerAddress, setCustomerAddress] = useState('');
   const [advanceDeposit, setAdvanceDeposit] = useState(2500);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [skuQuery, setSkuQuery] = useState('');
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   // Financial Calculations
   const subtotal = currentQty * unitPrice;
@@ -33,6 +148,38 @@ export default function Sales({ onNavigate }) {
     if (newQty < 1) newQty = 1;
     setCurrentQty(newQty);
   };
+
+  const handleScanDetected = (code) => {
+    setSkuQuery(code);
+    setIsScannerOpen(false);
+  };
+
+  // Shared SKU search + scan row (used in both tabs)
+  const renderSkuSearch = () => (
+    <div className="card form-group">
+      <label>Scan or Search SKU</label>
+      <div className="search-row">
+        <div className="search-input-wrapper">
+          <Search className="search-icon" size={18} />
+          <input
+            type="text"
+            placeholder="Search item..."
+            value={skuQuery}
+            onChange={(e) => setSkuQuery(e.target.value)}
+          />
+        </div>
+        <button
+          className="scan-btn"
+          onClick={() => setIsScannerOpen(true)}
+          type="button"
+          aria-label="Scan item with camera"
+          title="Scan with camera"
+        >
+          <ScanLine size={22} />
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="sales-container">
@@ -98,17 +245,8 @@ export default function Sales({ onNavigate }) {
           {/* FULL PAYMENT SECTION */}
           {currentSaleMode === 'full' && (
             <div className="sales-section">
-              {/* SKU Search */}
-              <div className="card form-group">
-                <label>Scan or Search SKU</label>
-                <div className="search-input-wrapper">
-                  <Search className="search-icon" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Search item..."
-                  />
-                </div>
-              </div>
+              {/* SKU Search + Scan */}
+              {renderSkuSearch()}
 
               {/* Line Item Card */}
               <div className="card item-card">
@@ -188,17 +326,8 @@ export default function Sales({ onNavigate }) {
           {/* ADVANCE PAYMENT SECTION */}
           {currentSaleMode === 'advance' && (
             <div className="sales-section">
-              {/* SKU Search */}
-              <div className="card form-group">
-                <label>Scan or Search SKU</label>
-                <div className="search-input-wrapper">
-                  <Search className="search-icon" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Search item..."
-                  />
-                </div>
-              </div>
+              {/* SKU Search + Scan */}
+              {renderSkuSearch()}
 
               {/* Active Line Item */}
               <div className="card item-card">
@@ -377,6 +506,14 @@ export default function Sales({ onNavigate }) {
 
         </div>
       </main>
+
+      {/* Barcode Scanner Overlay */}
+      {isScannerOpen && (
+        <BarcodeScanner
+          onDetected={handleScanDetected}
+          onClose={() => setIsScannerOpen(false)}
+        />
+      )}
     </div>
   );
 }
