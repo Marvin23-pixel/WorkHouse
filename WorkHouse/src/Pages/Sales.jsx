@@ -13,6 +13,46 @@ import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import Logo from "../assets/Logo.png";
 import '../Styles/sales.css';
 
+/* ---------- Instant scan beep (Web Audio, no file needed) ---------- */
+let audioCtx = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  return audioCtx;
+}
+
+// Call on a user tap so the browser allows sound later with zero delay
+function unlockAudio() {
+  const ctx = getAudioContext();
+  if (ctx && ctx.state === 'suspended') ctx.resume();
+}
+
+function playBeep() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const now = ctx.currentTime;
+
+  osc.type = 'square';
+  osc.frequency.value = 1900; // supermarket-style pitch
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.3, now + 0.005);
+  gain.gain.setValueAtTime(0.3, now + 0.1);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.16);
+}
+
 /* ---------- Barcode Scanner Overlay ---------- */
 const SCANNER_REGION_ID = 'sales-scanner-region';
 
@@ -43,6 +83,7 @@ function BarcodeScanner({ onDetected, onClose }) {
         (decodedText) => {
           if (handledRef.current) return;
           handledRef.current = true;
+          playBeep();
           if (navigator.vibrate) navigator.vibrate(100);
           onDetected(decodedText);
         },
@@ -170,7 +211,10 @@ export default function Sales({ onNavigate }) {
         </div>
         <button
           className="scan-btn"
-          onClick={() => setIsScannerOpen(true)}
+          onClick={() => {
+            unlockAudio();
+            setIsScannerOpen(true);
+          }}
           type="button"
           aria-label="Scan item with camera"
           title="Scan with camera"
