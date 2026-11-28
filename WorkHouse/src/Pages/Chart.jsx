@@ -18,7 +18,7 @@ const SAMPLE_SALES = [
 const RANGES = [
   { id: 7, label: "7 days" },
   { id: 14, label: "14 days" },
-  { id: 30, label: "30 days" },
+  { id: 30, label: "1 month" },
 ];
 
 const PAD = { top: 54, right: 14, bottom: 28, left: 48 };
