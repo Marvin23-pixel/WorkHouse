@@ -7,14 +7,16 @@ import {
   CheckCircle,
   ScanLine,
   X,
-  CameraOff
+  CameraOff,
+  Minus,
+  Plus
 } from 'lucide-react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import Logo from "../assets/Logo.png";
 import { normalizeCode } from "../Adminfunctions/StoreInventory";
 import '../Styles/sales.css';
 
-/* ---------- Instant scan beep (Web Audio, no file needed) ---------- */
+/* ---------- Instant beeps (Web Audio, no file needed) ---------- */
 let audioCtx = null;
 
 function getAudioContext() {
@@ -31,36 +33,71 @@ function unlockAudio() {
   if (ctx && ctx.state === 'suspended') ctx.resume();
 }
 
-function playBeep() {
+function tone(freq, startOffset, duration, type = 'square', volume = 0.3) {
   const ctx = getAudioContext();
   if (!ctx) return;
   if (ctx.state === 'suspended') ctx.resume();
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  const now = ctx.currentTime;
+  const t = ctx.currentTime + startOffset;
 
-  osc.type = 'square';
-  osc.frequency.value = 1900; // supermarket-style pitch
+  osc.type = type;
+  osc.frequency.value = freq;
 
-  gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.3, now + 0.005);
-  gain.gain.setValueAtTime(0.3, now + 0.1);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(volume, t + 0.005);
+  gain.gain.setValueAtTime(volume, t + duration - 0.04);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
 
   osc.connect(gain);
   gain.connect(ctx.destination);
-  osc.start(now);
-  osc.stop(now + 0.16);
+  osc.start(t);
+  osc.stop(t + duration + 0.02);
 }
 
-/* ---------- Barcode Scanner Overlay ---------- */
-const SCANNER_REGION_ID = 'sales-scanner-region';
+// Supermarket-style "item added" beep
+function playBeep() {
+  tone(1900, 0, 0.14);
+}
 
-function BarcodeScanner({ onDetected, onClose }) {
+// Low double buzz: item not found / out of stock / stock limit reached
+function playErrorBeep() {
+  tone(400, 0, 0.12, 'sawtooth', 0.2);
+  tone(300, 0.16, 0.18, 'sawtooth', 0.2);
+}
+
+/* ---------- Helpers ---------- */
+const formatNaira = (n) => `₦${Number(n).toLocaleString()}`;
+
+function describeResult(result, code) {
+  switch (result.status) {
+    case 'added':
+      return { type: 'success', text: `Added: ${result.name}` };
+    case 'outofstock':
+      return { type: 'warn', text: `${result.name} is out of stock` };
+    case 'maxstock':
+      return { type: 'warn', text: `Only ${result.stock} of ${result.name} in stock` };
+    default:
+      return { type: 'warn', text: code ? `No item found for "${code}"` : 'No item found' };
+  }
+}
+
+/* ---------- Barcode Scanner Overlay (stays open for continuous scanning) ---------- */
+const SCANNER_REGION_ID = 'sales-scanner-region';
+const SCAN_COOLDOWN_MS = 1200; // ignore the same code while it stays in view
+
+function BarcodeScanner({ onScan, itemCount, total, onClose }) {
   const [error, setError] = useState('');
   const [starting, setStarting] = useState(true);
-  const handledRef = useRef(false);
+  const [lastResult, setLastResult] = useState(null);
+  const onScanRef = useRef(onScan);
+  const lastScanRef = useRef({ code: '', time: 0 });
+
+  // Always call the latest onScan without restarting the camera
+  useEffect(() => {
+    onScanRef.current = onScan;
+  });
 
   useEffect(() => {
     const scanner = new Html5Qrcode(SCANNER_REGION_ID, {
@@ -82,11 +119,26 @@ function BarcodeScanner({ onDetected, onClose }) {
         { facingMode: 'environment' },
         { fps: 10, qrbox: { width: 250, height: 160 }, aspectRatio: 1.0 },
         (decodedText) => {
-          if (handledRef.current) return;
-          handledRef.current = true;
-          playBeep();
-          if (navigator.vibrate) navigator.vibrate(100);
-          onDetected(decodedText);
+          const now = Date.now();
+          const last = lastScanRef.current;
+
+          // Same code still in front of the camera: don't add it again
+          if (decodedText === last.code && now - last.time < SCAN_COOLDOWN_MS) {
+            lastScanRef.current = { code: decodedText, time: now };
+            return;
+          }
+          lastScanRef.current = { code: decodedText, time: now };
+
+          const result = onScanRef.current(decodedText);
+
+          if (result.status === 'added') {
+            playBeep();
+          } else {
+            playErrorBeep();
+          }
+          if (navigator.vibrate) navigator.vibrate(80);
+
+          setLastResult({ ...describeResult(result, decodedText), key: now });
         },
         () => {} // ignore "no code found" frames
       )
@@ -117,8 +169,8 @@ function BarcodeScanner({ onDetected, onClose }) {
       <div className="scanner-card">
         <div className="scanner-header">
           <div>
-            <h3>Scan Item</h3>
-            <p>Point your camera at the barcode</p>
+            <h3>Scan Items</h3>
+            <p>Keep scanning. Each item is added automatically.</p>
           </div>
           <button className="scanner-close-btn" onClick={onClose} type="button" aria-label="Close scanner">
             <X size={20} />
@@ -153,10 +205,20 @@ function BarcodeScanner({ onDetected, onClose }) {
           )}
         </div>
 
-        <p className="scanner-hint">Hold steady and keep the barcode inside the frame</p>
+        <div
+          key={lastResult ? lastResult.key : 'idle'}
+          className={`scanner-last ${lastResult ? (lastResult.type === 'success' ? 'ok' : 'warn') : ''}`}
+        >
+          {lastResult ? lastResult.text : 'Waiting for a barcode...'}
+        </div>
 
-        <button className="scanner-cancel-btn" onClick={onClose} type="button">
-          Cancel
+        <div className="scanner-summary">
+          <span>Items in sale: <strong>{itemCount}</strong></span>
+          <span>Total: <strong>{formatNaira(total)}</strong></span>
+        </div>
+
+        <button className="scanner-done-btn" onClick={onClose} type="button">
+          Done{itemCount > 0 ? ` (${itemCount} item${itemCount === 1 ? '' : 's'})` : ''}
         </button>
       </div>
     </div>
@@ -164,12 +226,8 @@ function BarcodeScanner({ onDetected, onClose }) {
 }
 
 /* ---------- Sales Page ---------- */
-const DEFAULT_ITEM_NAME = 'Golden Penny Sugar 500g';
-
 export default function Sales({ onNavigate, products = [] }) {
   const [currentSaleMode, setCurrentSaleMode] = useState('full');
-  const [currentQty, setCurrentQty] = useState(4);
-  const [unitPrice, setUnitPrice] = useState(1200);
   const [activePayment, setActivePayment] = useState('cash');
   const [activeAdvPayment, setActiveAdvPayment] = useState('cash');
   const [customerName, setCustomerName] = useState('Chief Adeleke');
@@ -179,72 +237,160 @@ export default function Sales({ onNavigate, products = [] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [skuQuery, setSkuQuery] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [notice, setNotice] = useState(null); // { type: 'success' | 'warn', text }
 
-  // Find the inventory item that matches what was scanned or typed:
-  // 1) exact barcode number or SKU, 2) otherwise name contains the text
-  const matchedProduct = useMemo(() => {
-    const raw = skuQuery.trim();
-    if (!raw) return null;
+  // Cart lines only store { id, qty }. Name, price and stock always come
+  // live from the store inventory, so changes there show up here instantly.
+  const [cart, setCart] = useState([]);
+  const cartRef = useRef([]);
+  const productsRef = useRef(products);
+  productsRef.current = products;
+  const noticeTimerRef = useRef(null);
 
-    const code = normalizeCode(raw);
-    const exact = products.find(
-      (p) =>
-        (p.barcode && normalizeCode(p.barcode) === code) ||
-        p.id.toLowerCase() === raw.toLowerCase()
+  useEffect(() => () => clearTimeout(noticeTimerRef.current), []);
+
+  const commitCart = (next) => {
+    cartRef.current = next;
+    setCart(next);
+  };
+
+  const showNotice = (type, text) => {
+    setNotice({ type, text });
+    clearTimeout(noticeTimerRef.current);
+    noticeTimerRef.current = setTimeout(() => setNotice(null), 2500);
+  };
+
+  // Exact match on barcode number or SKU
+  const findByCode = (raw) => {
+    const trimmed = String(raw ?? '').trim();
+    if (!trimmed) return null;
+    const code = normalizeCode(trimmed);
+    return (
+      productsRef.current.find(
+        (p) =>
+          (p.barcode && normalizeCode(p.barcode) === code) ||
+          p.id.toLowerCase() === trimmed.toLowerCase()
+      ) || null
     );
-    if (exact) return exact;
+  };
 
-    if (raw.length >= 3) {
-      const q = raw.toLowerCase();
-      return products.find((p) => p.name.toLowerCase().includes(q)) || null;
+  // Adds 1 of a product (or +1 if already in the list). Returns what happened.
+  const addProductToCart = (product) => {
+    if (!product) return { status: 'notfound' };
+    if (product.stock <= 0) return { status: 'outofstock', name: product.name };
+
+    const current = cartRef.current;
+    const existing = current.find((line) => line.id === product.id);
+
+    if (existing) {
+      if (existing.qty >= product.stock) {
+        return { status: 'maxstock', name: product.name, stock: product.stock };
+      }
+      commitCart(
+        current.map((line) =>
+          line.id === product.id ? { ...line, qty: line.qty + 1 } : line
+        )
+      );
+    } else {
+      // newest item goes on top so it is always visible
+      commitCart([{ id: product.id, qty: 1 }, ...current]);
     }
-    return null;
+    return { status: 'added', name: product.name };
+  };
+
+  // Called by the scanner for every barcode it reads
+  const handleScan = (code) => addProductToCart(findByCode(code));
+
+  const handleManualAdd = (product) => {
+    const result = addProductToCart(product);
+    const info = describeResult(result);
+    showNotice(info.type, info.text);
+    setSkuQuery('');
+  };
+
+  const changeQty = (id, delta) => {
+    const product = products.find((p) => p.id === id);
+    const max = product ? product.stock : Infinity;
+    let hitMax = false;
+
+    const next = cartRef.current.map((line) => {
+      if (line.id !== id) return line;
+      let qty = line.qty + delta;
+      if (qty > max) {
+        qty = Math.max(1, max);
+        hitMax = true;
+      }
+      if (qty < 1) qty = 1;
+      return { ...line, qty };
+    });
+    commitCart(next);
+    if (hitMax && product) {
+      showNotice('warn', `Only ${product.stock} of ${product.name} in stock`);
+    }
+  };
+
+  const removeItem = (id) => commitCart(cartRef.current.filter((line) => line.id !== id));
+  const clearCart = () => commitCart([]);
+
+  // Search box: auto-add on an exact barcode / SKU, Enter to add, tap a suggestion
+  const handleSkuChange = (e) => {
+    const value = e.target.value;
+    setSkuQuery(value);
+    const trimmed = value.trim();
+    if (trimmed.length >= 6) {
+      const exact = findByCode(trimmed);
+      if (exact) handleManualAdd(exact);
+    }
+  };
+
+  const suggestions = useMemo(() => {
+    const q = skuQuery.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return products
+      .filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.id.toLowerCase().includes(q) ||
+          (p.barcode && p.barcode.toLowerCase().includes(q))
+      )
+      .slice(0, 5);
   }, [skuQuery, products]);
 
-  // Price follows the matched item (and updates if its inventory price changes)
-  useEffect(() => {
-    if (matchedProduct) setUnitPrice(matchedProduct.price);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [matchedProduct?.id, matchedProduct?.price]);
+  const handleSkuKeyDown = (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const trimmed = skuQuery.trim();
+    if (!trimmed) return;
 
-  const activeItemName = matchedProduct ? matchedProduct.name : DEFAULT_ITEM_NAME;
+    const product = findByCode(trimmed) || (suggestions.length === 1 ? suggestions[0] : null);
+    if (product) {
+      handleManualAdd(product);
+    } else if (suggestions.length > 1) {
+      showNotice('warn', 'Tap an item from the list to add it');
+    } else {
+      showNotice('warn', `No item found for "${trimmed}"`);
+    }
+  };
 
-  // Financial Calculations
-  const subtotal = currentQty * unitPrice;
+  // Cart lines joined with live inventory data
+  const cartItems = useMemo(
+    () =>
+      cart
+        .map((line) => {
+          const p = products.find((x) => x.id === line.id);
+          return p ? { ...p, qty: line.qty } : null;
+        })
+        .filter(Boolean),
+    [cart, products]
+  );
+
+  // Financial Calculations (all items together)
+  const totalUnits = cartItems.reduce((sum, item) => sum + item.qty, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
   const vat = currentSaleMode === 'advance' ? Math.round(subtotal * 0.075) : 0;
   const grandTotal = subtotal + vat;
-  const minDeposit = Math.round(grandTotal * 0.2);
   const balance = Math.max(0, grandTotal - advanceDeposit);
-
-  const updateQuantity = (delta) => {
-    let newQty = currentQty + delta;
-    if (newQty < 1) newQty = 1;
-    setCurrentQty(newQty);
-  };
-
-  const handleScanDetected = (code) => {
-    setSkuQuery(code);
-    setIsScannerOpen(false);
-  };
-
-  // Stock badge reflects the real inventory level of the matched item
-  const renderStockBadge = () => {
-    if (!matchedProduct) return <span className="badge-success">In Stock</span>;
-    if (matchedProduct.stock === 0) {
-      return (
-        <span
-          className="badge-warning"
-          style={{ background: '#fee2e2', color: '#b91c1c' }}
-        >
-          Out of Stock
-        </span>
-      );
-    }
-    if (matchedProduct.stock <= 5) {
-      return <span className="badge-warning">Low Stock · {matchedProduct.stock} left</span>;
-    }
-    return <span className="badge-success">In Stock</span>;
-  };
+  const cartEmpty = cartItems.length === 0;
 
   // Shared SKU search + scan row (used in both tabs)
   const renderSkuSearch = () => (
@@ -257,7 +403,8 @@ export default function Sales({ onNavigate, products = [] }) {
             type="text"
             placeholder="Search item..."
             value={skuQuery}
-            onChange={(e) => setSkuQuery(e.target.value)}
+            onChange={handleSkuChange}
+            onKeyDown={handleSkuKeyDown}
           />
         </div>
         <button
@@ -267,23 +414,115 @@ export default function Sales({ onNavigate, products = [] }) {
             setIsScannerOpen(true);
           }}
           type="button"
-          aria-label="Scan item with camera"
+          aria-label="Scan items with camera"
           title="Scan with camera"
         >
           <ScanLine size={22} />
         </button>
       </div>
 
-      {skuQuery.trim() && matchedProduct && (
-        <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#16a34a' }}>
-          ✓ Item found in store inventory
-        </p>
+      {suggestions.length > 0 && (
+        <div className="suggestions">
+          {suggestions.map((p) => (
+            <button
+              key={p.id}
+              className="suggestion-item"
+              type="button"
+              disabled={p.stock <= 0}
+              onClick={() => handleManualAdd(p)}
+            >
+              <span className="suggestion-text">
+                <span className="suggestion-name">{p.name}</span>
+                <span className="suggestion-meta">
+                  {p.stock <= 0 ? 'Out of stock' : `${p.stock} in stock`}
+                  {p.barcode ? ` · ${p.barcode}` : ''}
+                </span>
+              </span>
+              <span className="suggestion-price">{formatNaira(p.price)}</span>
+            </button>
+          ))}
+        </div>
       )}
-      {skuQuery.trim() && !matchedProduct && (
-        <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#b45309' }}>
-          No item found for this code
-        </p>
+
+      {notice && <p className={`search-notice ${notice.type}`}>{notice.text}</p>}
+    </div>
+  );
+
+  // Shared items list (used in both tabs)
+  const renderItemsCard = () => (
+    <div className="card cart-card">
+      <div className="cart-header">
+        <span className="cart-title">
+          Items in this sale
+          {!cartEmpty && <span className="cart-count">{totalUnits}</span>}
+        </span>
+        {!cartEmpty && (
+          <button className="cart-clear-btn" onClick={clearCart} type="button">
+            Clear all
+          </button>
+        )}
+      </div>
+
+      {cartEmpty ? (
+        <div className="cart-empty">
+          <div className="cart-empty-icon">
+            <ShoppingBag size={22} />
+          </div>
+          <p>No items yet</p>
+          <span>Scan or search above to add items</span>
+        </div>
+      ) : (
+        <ul className="cart-list">
+          {cartItems.map((item) => (
+            <li className="cart-row" key={item.id}>
+              <div className="cart-row-top">
+                <span className="cart-item-name">{item.name}</span>
+                <button
+                  className="cart-remove-btn"
+                  onClick={() => removeItem(item.id)}
+                  type="button"
+                  aria-label={`Remove ${item.name}`}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="cart-row-bottom">
+                <span className="cart-unit">
+                  {formatNaira(item.price)} each
+                  {item.stock <= 5 && (
+                    <span className="cart-low"> · only {item.stock} left</span>
+                  )}
+                </span>
+                <div className="cart-row-right">
+                  <div className="cart-qty">
+                    <button
+                      onClick={() => changeQty(item.id, -1)}
+                      type="button"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span>{item.qty}</span>
+                    <button
+                      onClick={() => changeQty(item.id, 1)}
+                      type="button"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  <span className="cart-line-total">{formatNaira(item.price * item.qty)}</span>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
+
+      <div className="item-total-row">
+        <span>{currentSaleMode === 'advance' ? 'Subtotal (Excl. VAT):' : 'Total:'}</span>
+        <span className="item-grand-total">{formatNaira(subtotal)}</span>
+      </div>
     </div>
   );
 
@@ -351,55 +590,8 @@ export default function Sales({ onNavigate, products = [] }) {
           {/* FULL PAYMENT SECTION */}
           {currentSaleMode === 'full' && (
             <div className="sales-section">
-              {/* SKU Search + Scan */}
               {renderSkuSearch()}
-
-              {/* Line Item Card */}
-              <div className="card item-card">
-                <div className="item-card-header">
-                  <span>Active Line Item</span>
-                  {renderStockBadge()}
-                </div>
-
-                <div className="item-row">
-                  <div className="item-icon-box">
-                    <ShoppingBag size={20} />
-                  </div>
-                  <input
-                    className="item-name-input"
-                    type="text"
-                    value={activeItemName}
-                    readOnly
-                  />
-                </div>
-
-                <div className="item-controls-grid">
-                  <div className="input-field-wrap">
-                    <label>Unit Price</label>
-                    <div className="price-input-container">
-                      <span className="currency-symbol">₦</span>
-                      <input
-                        type="number"
-                        value={unitPrice}
-                        onChange={(e) => setUnitPrice(Number(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className="input-field-wrap">
-                    <label>Quantity</label>
-                    <div className="qty-selector">
-                      <button onClick={() => updateQuantity(-1)} type="button">-</button>
-                      <span>{currentQty}</span>
-                      <button onClick={() => updateQuantity(1)} type="button">+</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="item-total-row">
-                  <span>Total:</span>
-                  <span className="item-grand-total">₦{grandTotal.toLocaleString()}</span>
-                </div>
-              </div>
+              {renderItemsCard()}
 
               {/* Payment Method Selector */}
               <div className="card payment-method-card">
@@ -422,9 +614,10 @@ export default function Sales({ onNavigate, products = [] }) {
               <button
                 className="submit-action-btn"
                 onClick={() => setIsModalOpen(true)}
+                disabled={cartEmpty}
                 type="button"
               >
-                Submit Sale (₦{grandTotal.toLocaleString()})
+                {cartEmpty ? 'Add items to continue' : `Submit Sale (${formatNaira(grandTotal)})`}
               </button>
             </div>
           )}
@@ -432,55 +625,8 @@ export default function Sales({ onNavigate, products = [] }) {
           {/* ADVANCE PAYMENT SECTION */}
           {currentSaleMode === 'advance' && (
             <div className="sales-section">
-              {/* SKU Search + Scan */}
               {renderSkuSearch()}
-
-              {/* Active Line Item */}
-              <div className="card item-card">
-                <div className="item-card-header">
-                  <span>Active Line Item</span>
-                  {renderStockBadge()}
-                </div>
-
-                <div className="item-row">
-                  <div className="item-icon-box">
-                    <ShoppingBag size={20} />
-                  </div>
-                  <input
-                    className="item-name-input"
-                    type="text"
-                    value={activeItemName}
-                    readOnly
-                  />
-                </div>
-
-                <div className="item-controls-grid">
-                  <div className="input-field-wrap">
-                    <label>Unit Price</label>
-                    <div className="price-input-container">
-                      <span className="currency-symbol">₦</span>
-                      <input
-                        type="number"
-                        value={unitPrice}
-                        onChange={(e) => setUnitPrice(Number(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className="input-field-wrap">
-                    <label>Quantity</label>
-                    <div className="qty-selector">
-                      <button onClick={() => updateQuantity(-1)} type="button">-</button>
-                      <span>{currentQty}</span>
-                      <button onClick={() => updateQuantity(1)} type="button">+</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="item-total-row">
-                  <span>Subtotal (Excl. VAT):</span>
-                  <span className="item-grand-total">₦{subtotal.toLocaleString()}</span>
-                </div>
-              </div>
+              {renderItemsCard()}
 
               {/* Customer Information */}
               <div className="card form-group">
@@ -521,7 +667,6 @@ export default function Sales({ onNavigate, products = [] }) {
               <div className="card form-group">
                 <div className="card-header-between">
                   <label>Amount Paid Now *</label>
-                  {/* <span className="min-deposit-label">Min 20%: ₦{minDeposit.toLocaleString()}</span> */}
                 </div>
 
                 <div className="deposit-input-container">
@@ -553,18 +698,17 @@ export default function Sales({ onNavigate, products = [] }) {
                 <div className="summary-breakdown-box">
                   <div className="summary-row">
                     <span>Total Order Value (Incl. VAT):</span>
-                    <span>₦{grandTotal.toLocaleString()}</span>
+                    <span>{formatNaira(grandTotal)}</span>
                   </div>
                   <div className="summary-row">
                     <span>Amount Paid Now:</span>
-                    <span className="text-success-val">-₦{advanceDeposit.toLocaleString()}</span>
+                    <span className="text-success-val">-{formatNaira(advanceDeposit)}</span>
                   </div>
                   <div className="summary-row outstanding-row">
                     <div>
                       <span className="outstanding-title">Outstanding Balance:</span>
-                      {/* <span className="outstanding-note">Due within 14 days</span> */}
                     </div>
-                    <span className="outstanding-amount">₦{balance.toLocaleString()}</span>
+                    <span className="outstanding-amount">{formatNaira(balance)}</span>
                   </div>
                 </div>
               </div>
@@ -573,9 +717,12 @@ export default function Sales({ onNavigate, products = [] }) {
               <button
                 className="submit-action-btn"
                 onClick={() => setIsModalOpen(true)}
+                disabled={cartEmpty}
                 type="button"
               >
-                Record Advance Sale (₦{advanceDeposit.toLocaleString()} Deposit)
+                {cartEmpty
+                  ? 'Add items to continue'
+                  : `Record Advance Sale (${formatNaira(advanceDeposit)} Deposit)`}
               </button>
             </div>
           )}
@@ -600,7 +747,11 @@ export default function Sales({ onNavigate, products = [] }) {
                   </button>
                   <button
                     className="modal-btn-primary"
-                    onClick={() => { setIsModalOpen(false); setCurrentQty(1); }}
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      clearCart();
+                      setSkuQuery('');
+                    }}
                     type="button"
                   >
                     New Sale
@@ -616,7 +767,9 @@ export default function Sales({ onNavigate, products = [] }) {
       {/* Barcode Scanner Overlay */}
       {isScannerOpen && (
         <BarcodeScanner
-          onDetected={handleScanDetected}
+          onScan={handleScan}
+          itemCount={totalUnits}
+          total={grandTotal}
           onClose={() => setIsScannerOpen(false)}
         />
       )}
