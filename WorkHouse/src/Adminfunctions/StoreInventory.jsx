@@ -55,12 +55,13 @@ export const INITIAL_PRODUCTS = [
     stock: 18,
     unitLabel: "cartons",
   },
-  {
+    {
     id: "SKU-20914",
     name: "Capri_Sun Juice",
     price: 2500,
-    stock: 0,
-    unitLabel: "units remaining",
+    stock: 20,
+    unitLabel: "units in stock",
+    barcode: "6151100051011",
   },
   // Test product for scanning (change the price or delete it any time)
   {
